@@ -1,0 +1,14 @@
+server:
+  port: ${SERVER_PORT:8081}
+
+app:
+  cors:
+    origins: ${CORS_ORIGINS:http://localhost:3000}
+
+spring:
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${KEYCLOAK_ISSUER:http://localhost:8080/realms/demo}
+          jwk-set-uri: ${KEYCLOAK_JWK_SET_URI:http://localhost:8080/realms/demo/protocol/openid-connect/certs}
