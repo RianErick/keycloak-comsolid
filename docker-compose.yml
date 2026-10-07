@@ -7,6 +7,7 @@ services:
       POSTGRES_PASSWORD: keycloak
     volumes:
       - postgres_data:/var/lib/postgresql/data
+      - ./postgres/init:/docker-entrypoint-initdb.d:ro
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U keycloak"]
       interval: 5s
@@ -48,6 +49,8 @@ services:
     build:
       context: ./backend
     depends_on:
+      postgres:
+        condition: service_healthy
       keycloak:
         condition: service_healthy
     environment:
@@ -55,6 +58,12 @@ services:
       CORS_ORIGINS: http://localhost:3000
       KEYCLOAK_ISSUER: http://localhost:8080/realms/demo
       KEYCLOAK_JWK_SET_URI: http://keycloak:8080/realms/demo/protocol/openid-connect/certs
+      KEYCLOAK_ADMIN_SERVER_URL: http://keycloak:8080
+      KEYCLOAK_ADMIN_USERNAME: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+      APP_DB_URL: jdbc:postgresql://postgres:5432/demo_app
+      APP_DB_USER: keycloak
+      APP_DB_PASSWORD: keycloak
     ports:
       - "8081:8081"
     restart: unless-stopped
