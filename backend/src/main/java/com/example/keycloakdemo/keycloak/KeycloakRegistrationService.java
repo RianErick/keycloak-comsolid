@@ -35,6 +35,15 @@ public class KeycloakRegistrationService {
         return UUID.fromString(userId);
     }
 
+    public void deleteUser(UUID keycloakUserId) {
+        String token = adminAccessToken();
+        restClient.delete()
+            .uri(props.serverUrl() + "/admin/realms/" + props.realm() + "/users/" + keycloakUserId)
+            .header("Authorization", "Bearer " + token)
+            .retrieve()
+            .toBodilessEntity();
+    }
+
     public Optional<UUID> findKeycloakUserId(String username) {
         String token = adminAccessToken();
         List<?> users = restClient.get()

@@ -36,7 +36,13 @@ public class RegistrationController {
     @PostMapping("/register")
     public Map<String, Object> register(@RequestBody @Valid RegisterRequest request) {
         var keycloakUserId = registrationService.register(request);
-        AppUserProfile profile = profileService.createFromRegistration(keycloakUserId, request);
+        AppUserProfile profile;
+        try {
+            profile = profileService.createFromRegistration(keycloakUserId, request);
+        } catch (RuntimeException ex) {
+            registrationService.deleteUser(keycloakUserId);
+            throw ex;
+        }
         Map<String, Object> body = new LinkedHashMap<>();
         body.put("message", "Usuário criado. No primeiro login o Keycloak exige configurar MFA (OTP).");
         body.put("username", request.username());

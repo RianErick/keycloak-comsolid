@@ -47,12 +47,18 @@ public class ApiController {
         body.put("issuedAt", jwt.getIssuedAt());
         body.put("expiresAt", jwt.getExpiresAt());
 
-        AppUserProfile profile = profileService.findByKeycloakUserId(UUID.fromString(jwt.getSubject()));
-        body.put("appProfile", profileService.toResponse(profile));
+        AppUserProfile profile = findProfile(jwt);
         if (profile != null) {
+            body.put("appProfile", profileService.toResponse(profile));
             body.put(
                 "message",
                 "JWT validado no Keycloak. Perfil local encontrado no PostgreSQL do backend (via keycloakUserId)."
+            );
+        } else {
+            body.put("appProfile", Map.of());
+            body.put(
+                "message",
+                "JWT validado no Keycloak, mas não há perfil local vinculado a este subject (sub)."
             );
         }
         return body;
@@ -64,9 +70,21 @@ public class ApiController {
         body.put("message", "Acesso administrativo concedido (role admin no realm).");
         body.put("username", jwt.getClaimAsString("preferred_username"));
         body.put("roles", realmRoles(jwt));
-        AppUserProfile profile = profileService.findByKeycloakUserId(UUID.fromString(jwt.getSubject()));
-        body.put("appProfile", profileService.toResponse(profile));
+        AppUserProfile profile = findProfile(jwt);
+        body.put("appProfile", profile != null ? profileService.toResponse(profile) : Map.of());
         return body;
+    }
+
+    private AppUserProfile findProfile(Jwt jwt) {
+        String subject = jwt.getSubject();
+        if (subject == null || subject.isBlank()) {
+            return null;
+        }
+        try {
+            return profileService.findByKeycloakUserId(UUID.fromString(subject));
+        } catch (IllegalArgumentException ex) {
+            return null;
+        }
     }
 
     @SuppressWarnings("unchecked")

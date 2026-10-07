@@ -73,8 +73,10 @@ export function Console({
           return;
         }
         const body = response.body as { appProfile?: AppProfile | null };
-        setAppProfile(body.appProfile ?? null);
-        setProfileError(body.appProfile ? null : "Sem registro local para este subject (sub) do JWT.");
+        const profile = body.appProfile;
+        const hasProfile = Boolean(profile && profile.keycloakUserId);
+        setAppProfile(hasProfile ? profile! : null);
+        setProfileError(hasProfile ? null : "Sem registro local para este subject (sub) do JWT.");
         if (response.tokens) {
           onTokensChange(response.tokens);
         }
