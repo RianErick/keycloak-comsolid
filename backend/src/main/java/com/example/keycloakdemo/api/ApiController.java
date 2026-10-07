@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -12,9 +13,18 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.keycloakdemo.user.AppUserProfile;
+import com.example.keycloakdemo.user.AppUserProfileService;
+
 @RestController
 @RequestMapping("/api")
 public class ApiController {
+
+    private final AppUserProfileService profileService;
+
+    public ApiController(AppUserProfileService profileService) {
+        this.profileService = profileService;
+    }
 
     @GetMapping("/public")
     public Map<String, Object> publicEndpoint() {
@@ -36,6 +46,15 @@ public class ApiController {
         body.put("roles", realmRoles(jwt));
         body.put("issuedAt", jwt.getIssuedAt());
         body.put("expiresAt", jwt.getExpiresAt());
+
+        AppUserProfile profile = profileService.findByKeycloakUserId(UUID.fromString(jwt.getSubject()));
+        body.put("appProfile", profileService.toResponse(profile));
+        if (profile != null) {
+            body.put(
+                "message",
+                "JWT validado no Keycloak. Perfil local encontrado no PostgreSQL do backend (via keycloakUserId)."
+            );
+        }
         return body;
     }
 
@@ -45,6 +64,8 @@ public class ApiController {
         body.put("message", "Acesso administrativo concedido (role admin no realm).");
         body.put("username", jwt.getClaimAsString("preferred_username"));
         body.put("roles", realmRoles(jwt));
+        AppUserProfile profile = profileService.findByKeycloakUserId(UUID.fromString(jwt.getSubject()));
+        body.put("appProfile", profileService.toResponse(profile));
         return body;
     }
 
