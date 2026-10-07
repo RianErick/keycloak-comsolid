@@ -1,45 +1,14 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Keycloak</title>
-  <link rel="stylesheet" href="styles.css">
-</head>
-<body>
-  <header>
-    <h1>Keycloak</h1>
-    <div class="actions">
-      <button id="btn-login" class="hidden" type="button">Entrar</button>
-      <button id="btn-logout" class="hidden" type="button">Sair</button>
-    </div>
-  </header>
-
-  <p id="session-status">Carregando...</p>
-  <dl id="user-fields" class="hidden"></dl>
-  <p class="hint">
-    alice / alice123 (user)<br>
-    bob / bob123 (user, admin)
-  </p>
-
-  <h2>
-    Token
-    <button id="btn-copy" class="hidden" type="button">Copiar</button>
-  </h2>
-  <p id="token-empty">Faça login para ver o JWT.</p>
-  <pre id="token-raw" class="hidden"></pre>
-  <pre id="token-claims">—</pre>
-
-  <h2>API</h2>
-  <p>
-    <button id="btn-public" type="button">GET /api/public</button>
-    <button id="btn-me" type="button">GET /api/me</button>
-    <button id="btn-admin" type="button">GET /api/admin</button>
-  </p>
-  <p id="api-meta" class="hidden"></p>
-  <pre id="api-result">Clique em um endpoint.</pre>
-
-  <script src="config.js"></script>
-  <script src="app.js"></script>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Keycloak · demo</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect fill='%2314110e' width='32' height='32'/%3E%3Crect x='6' y='22' width='20' height='2' fill='%23c45c26'/%3E%3C/svg%3E" />
+    <script src="/config.js"></script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
 </html>
