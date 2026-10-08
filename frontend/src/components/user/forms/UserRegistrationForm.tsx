@@ -1,5 +1,5 @@
 import { type SubmitEvent } from 'react'
-import { LoaderCircle } from 'lucide-react'
+import { LoaderCircle, UserPlus } from 'lucide-react'
 import type { UserRegistration } from '@/types/user'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -41,7 +41,7 @@ export function UserRegistrationForm({ busy, onSubmit }: UserRegistrationFormPro
         <p id="password-hint" className="text-xs text-muted-foreground">Use at least 8 characters.</p>
       </div>
       <Button type="submit" className="mt-1 h-10 w-full" disabled={busy}>
-        {busy && <LoaderCircle className="animate-spin" aria-hidden="true" />}
+        {busy ? <LoaderCircle className="animate-spin" aria-hidden="true" /> : <UserPlus aria-hidden="true" />}
         {busy ? 'Registering…' : 'Register'}
       </Button>
     </form>

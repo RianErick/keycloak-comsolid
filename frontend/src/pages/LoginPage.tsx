@@ -1,3 +1,4 @@
+import { KeyRound, UserPlus } from 'lucide-react'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -15,8 +16,8 @@ export function LoginPage({ error, onRegister }: LoginPageProps) {
         <CardHeader><CardTitle className="text-xl">Demo Keycloak</CardTitle></CardHeader>
         <CardContent className="grid gap-4">
           <p className="text-sm text-muted-foreground">Sign in to continue.</p>
-          <Button className="w-full" onClick={() => login()}>Sign in with Keycloak</Button>
-          <Button className="w-full" variant="secondary" onClick={onRegister}>Register</Button>
+          <Button className="w-full" onClick={() => login()}><KeyRound aria-hidden="true" />Sign in with Keycloak</Button>
+          <Button className="w-full" variant="secondary" onClick={onRegister}><UserPlus aria-hidden="true" />Register</Button>
           {error && <Alert variant="destructive"><AlertDescription>{error}</AlertDescription></Alert>}
         </CardContent>
       </Card>

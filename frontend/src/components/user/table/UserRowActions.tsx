@@ -1,3 +1,4 @@
+import { Mail, Pencil, Trash2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import type { User } from '@/types/user'
 
@@ -33,21 +34,21 @@ export function UserRowActions({
         disabled={busy || !canManageUser}
         title={!canManageUser ? 'Only admins can edit other users.' : undefined}
         onClick={() => onEdit(user)}
-      >Edit</Button>
+      ><Pencil aria-hidden="true" />Edit</Button>
       <Button
         size="sm"
         variant="destructive"
         disabled={busy || !canManageUser}
         title={!canManageUser ? 'Only admins can delete other users.' : undefined}
         onClick={confirmDelete}
-      >Delete</Button>
+      ><Trash2 aria-hidden="true" />Delete</Button>
       <Button
         size="sm"
         variant="outline"
         disabled={busy || !canManageUser}
         title={!canManageUser ? 'Only admins can request email changes for other users.' : undefined}
         onClick={() => onChangeEmail(user.username)}
-      >Change email</Button>
+      ><Mail aria-hidden="true" />Change email</Button>
     </div>
   )
 }

@@ -1,3 +1,4 @@
+import { LogOut, UserRound } from 'lucide-react'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -14,18 +15,32 @@ type UserCardProps = {
 export function UserCard({ user, username, error, onRetry }: UserCardProps) {
   return (
     <Card>
-      <CardHeader><CardTitle className="text-xl">Hello, {user?.firstName || username}</CardTitle></CardHeader>
-      <CardContent className="grid gap-4">
+      <CardHeader className="items-center text-center">
+        <CardTitle className="flex flex-col items-center gap-3 text-xl">
+          <span className="grid size-10 shrink-0 place-items-center rounded-full bg-primary/10 text-primary">
+            <UserRound aria-hidden="true" className="size-5" />
+          </span>
+          <span>Hello, {user?.firstName || username}</span>
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="grid justify-items-center gap-4 text-center">
         {user ? (
-          <dl className="grid grid-cols-[90px_1fr] gap-2 text-sm">
+          <dl className="grid grid-cols-[90px_auto] gap-x-3 gap-y-2 text-left text-sm">
             <dt className="text-muted-foreground">Username</dt><dd className="break-words">{user.username}</dd>
             <dt className="text-muted-foreground">Email</dt><dd className="break-words">{user.email}</dd>
             {user.description && <><dt className="text-muted-foreground">Description</dt><dd className="break-words">{user.description}</dd></>}
           </dl>
         ) : !error ? <p>Loading user details…</p> : null}
-        {error && <Alert variant="destructive"><AlertDescription>{error}</AlertDescription></Alert>}
-        {error && <Button className="w-full" variant="outline" onClick={onRetry}>Retry</Button>}
-        <Button className="w-full" variant="secondary" onClick={() => logout()}>Sign out</Button>
+        {error && <Alert className="w-full max-w-xl text-left" variant="destructive"><AlertDescription>{error}</AlertDescription></Alert>}
+        {error && <Button variant="outline" onClick={onRetry}>Retry</Button>}
+        <Button
+          variant="destructive"
+          size="sm"
+          onClick={() => logout()}
+        >
+          <LogOut aria-hidden="true" />
+          Sign out
+        </Button>
       </CardContent>
     </Card>
   )

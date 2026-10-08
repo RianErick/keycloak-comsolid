@@ -1,4 +1,5 @@
 import { type SubmitEvent } from 'react'
+import { Save, X } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
@@ -43,8 +44,8 @@ export function UserEditDialog({ user, busy, onClose, onSave }: UserEditDialogPr
           </form>
         )}
         <DialogFooter>
-          <Button type="button" variant="outline" onClick={onClose}>Cancel</Button>
-          <Button type="submit" form="edit-user-form" disabled={busy || !user}>Save changes</Button>
+          <Button type="button" variant="outline" onClick={onClose}><X aria-hidden="true" />Cancel</Button>
+          <Button type="submit" form="edit-user-form" disabled={busy || !user}><Save aria-hidden="true" />Save changes</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

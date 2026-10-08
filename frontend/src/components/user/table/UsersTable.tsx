@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
@@ -68,8 +69,8 @@ export function UsersTable({ currentUser, currentUserId, isAdmin }: UsersTablePr
       <div className="flex items-center justify-between">
         <p className="text-sm text-muted-foreground">{total} users</p>
         <div className="flex gap-2">
-          <Button size="sm" variant="outline" disabled={directory.page === 0 || directory.query.isFetching} onClick={() => directory.setPage(directory.page - 1)}>Previous</Button>
-          <Button size="sm" variant="outline" disabled={directory.page + 1 >= pageCount || directory.query.isFetching} onClick={() => directory.setPage(directory.page + 1)}>Next</Button>
+          <Button size="sm" variant="outline" disabled={directory.page === 0 || directory.query.isFetching} onClick={() => directory.setPage(directory.page - 1)}><ChevronLeft aria-hidden="true" />Previous</Button>
+          <Button size="sm" variant="outline" disabled={directory.page + 1 >= pageCount || directory.query.isFetching} onClick={() => directory.setPage(directory.page + 1)}>Next<ChevronRight aria-hidden="true" /></Button>
         </div>
       </div>
       <UserEditDialog
