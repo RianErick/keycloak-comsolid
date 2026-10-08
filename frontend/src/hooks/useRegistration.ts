@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { useMutation } from '@tanstack/react-query'
 import axios from 'axios'
 import { login } from '@/services/keycloak.service'
@@ -7,6 +7,7 @@ import type { UserRegistration } from '@/types/user'
 
 export function useRegistration() {
   const [errorMessage, setErrorMessage] = useState('')
+  const submitting = useRef(false)
   const registration = useMutation({
     mutationFn: async (user: UserRegistration) => {
       await registerUser(user)
@@ -36,6 +37,12 @@ export function useRegistration() {
   return {
     busy: registration.isPending,
     error: errorMessage,
-    submit: (user: UserRegistration) => registration.mutate(user),
+    submit: (user: UserRegistration) => {
+      if (submitting.current) return
+      submitting.current = true
+      registration.mutate(user, {
+        onSettled: () => { submitting.current = false },
+      })
+    },
   }
 }
