@@ -28,6 +28,24 @@
   "ssoSessionMaxLifespan": 36000,
   "requiredActions": [
     {
+      "alias": "CONFIGURE_TOTP",
+      "name": "Configure OTP",
+      "providerId": "CONFIGURE_TOTP",
+      "enabled": true,
+      "defaultAction": false,
+      "priority": 10,
+      "config": {}
+    },
+    {
+      "alias": "VERIFY_EMAIL",
+      "name": "Verify Email",
+      "providerId": "VERIFY_EMAIL",
+      "enabled": true,
+      "defaultAction": false,
+      "priority": 50,
+      "config": {}
+    },
+    {
       "alias": "UPDATE_EMAIL",
       "name": "Update Email",
       "providerId": "UPDATE_EMAIL",

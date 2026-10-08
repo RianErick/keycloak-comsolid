@@ -60,7 +60,7 @@ O realm não inclui contas interativas pré-cadastradas. Crie uma conta pela op�
 | `PATCH` | `/v1/users/{username}/email` | JWT + usuário dono ou role `admin` |
 
 A troca de email é iniciada separadamente: o Keycloak pede reautenticação, solicita o novo endereço e só altera a conta depois da confirmação enviada para esse endereço.
-O Keycloak exige a verificação do email no login. Contas ainda não verificadas recebem a etapa de confirmação antes de acessar a aplicação. O `verifyEmail` do arquivo de importação só se aplica quando o realm é criado; para atualizar um realm já existente, habilite **Realm settings → Login → Verify email** (ou recrie o realm com `docker compose down -v`).
+O Keycloak exige a verificação do email no login. Contas ainda não verificadas recebem a etapa de confirmação antes de acessar a aplicação. A configuração de importação habilita `verifyEmail` e a ação obrigatória `VERIFY_EMAIL`. Para atualizar um realm já existente, habilite **Realm settings → Login → Verify email** e a ação **Verify Email** em **Authentication → Required actions**. O navegador pode manter uma sessão autenticada; saia da conta e entre novamente para validar a exigência.
 
 Sem token, `/v1/users/me` responde **401**. As rotas administrativas exigem uma conta à qual a role `admin` tenha sido atribuída.
 

@@ -5,17 +5,17 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { UserEditDialog } from '@/components/user/forms/UserEditDialog'
 import { UserRowActions } from '@/components/user/table/UserRowActions'
 import { useUsers } from '@/hooks/useUsers'
-import type { UserProfile } from '@/types/user'
+import type { User } from '@/types/user'
 
 type UsersTableProps = {
-  currentUser: UserProfile | null
+  currentUser: User | null
   currentUserId?: string
   isAdmin: boolean
 }
 
 export function UsersTable({ currentUser, currentUserId, isAdmin }: UsersTableProps) {
   const directory = useUsers()
-  const [editingUser, setEditingUser] = useState<UserProfile | null>(null)
+  const [editingUser, setEditingUser] = useState<User | null>(null)
   const visibleUsers = currentUser
     ? [currentUser, ...directory.users.filter((user) => user.keycloakId !== currentUser.keycloakId)]
     : directory.users

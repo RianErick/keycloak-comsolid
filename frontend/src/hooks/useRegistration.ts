@@ -32,14 +32,18 @@ function getRegistrationError(reason: unknown) {
   if (reason.response?.status === 409) {
     return 'That username or email is already in use. Try signing in or use different details.'
   }
+
   if (reason.response?.status === 400) {
     return 'Some details are invalid. Check the fields and try again.'
   }
+
   if (reason.code === 'ECONNABORTED' || !reason.response) {
     return 'Could not reach the server. Check your connection and try again.'
   }
+
   if (reason.response.status >= 500) {
     return 'The account service is unavailable right now. Please try again shortly.'
   }
+
   return 'Could not create your account. Please try again.'
 }

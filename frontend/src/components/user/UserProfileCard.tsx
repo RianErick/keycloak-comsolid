@@ -2,10 +2,10 @@ import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { logout } from '@/services/keycloak.service'
-import type { UserProfile } from '@/types/user'
+import type { User } from '@/types/user'
 
 type UserProfileCardProps = {
-  profile: UserProfile | null
+  profile: User | null
   username?: string
   error: string
   onRetry: () => void

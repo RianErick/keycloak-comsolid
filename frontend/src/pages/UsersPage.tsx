@@ -1,10 +1,10 @@
 import { UsersTable } from '@/components/user/table/UsersTable'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { UserProfileCard } from '@/components/user/UserProfileCard'
-import type { UserProfile } from '@/types/user'
+import type { User } from '@/types/user'
 
 type UsersPageProps = {
-  profile: UserProfile | null
+  profile: User | null
   username?: string
   userId?: string
   isAdmin: boolean

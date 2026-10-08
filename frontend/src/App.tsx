@@ -20,13 +20,13 @@ function App() {
     )
   }
 
-  if (session.authenticated) {
+  if (session.currentUser) {
     return (
       <UsersPage
-        profile={session.profile}
-        username={session.username}
-        userId={session.userId}
-        isAdmin={session.isAdmin}
+        profile={session.currentUser.profile}
+        username={session.currentUser.username}
+        userId={session.currentUser.keycloakId}
+        isAdmin={session.currentUser.isAdmin}
         error={session.error}
         onRetry={session.retryProfile}
       />

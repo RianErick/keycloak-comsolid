@@ -1,12 +1,12 @@
 import { Button } from '@/components/ui/button'
-import type { UserProfile } from '@/types/user'
+import type { User } from '@/types/user'
 
 type UserRowActionsProps = {
-  user: UserProfile
+  user: User
   currentUserId?: string
   isAdmin: boolean
   busy: boolean
-  onEdit: (user: UserProfile) => void
+  onEdit: (user: User) => void
   onDelete: (username: string) => void
   onChangeEmail: (username: string) => void
 }

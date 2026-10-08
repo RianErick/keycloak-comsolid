@@ -5,12 +5,12 @@ import {
   searchUsers,
   updateUser,
 } from '@/services/user.service'
-import type { UserProfile, UserUpdate } from '@/types/user'
+import type { User, UserUpdate } from '@/types/user'
 
 const PAGE_SIZE = 10
 
 export function useUsers() {
-  const [users, setUsers] = useState<UserProfile[]>([])
+  const [users, setUsers] = useState<User[]>([])
   const [page, setPage] = useState(0)
   const [refreshVersion, setRefreshVersion] = useState(0)
   const [total, setTotal] = useState(0)
@@ -27,7 +27,10 @@ export function useUsers() {
     async function loadPage() {
       try {
         const result = await searchUsers(page, PAGE_SIZE)
-        if (cancelled) return
+        if (cancelled) {
+          return
+        }
+
         setUsers(result.content)
         setTotal(result.pageable.total)
       } catch (reason) {

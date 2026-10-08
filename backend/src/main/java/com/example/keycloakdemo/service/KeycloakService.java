@@ -4,7 +4,6 @@ import java.net.URI;
 import java.util.List;
 import java.util.UUID;
 
-import com.example.keycloakdemo.exception.UserAlreadyVerifiedException;
 import com.example.keycloakdemo.exception.strategy.KeycloakExceptionStrategy;
 import com.example.keycloakdemo.payload.request.UserRegisterRequest;
 import com.example.keycloakdemo.payload.request.UserUpdateRequest;
@@ -13,7 +12,6 @@ import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.Response;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.keycloak.admin.client.resource.UserResource;
 import org.keycloak.admin.client.resource.UsersResource;
 import org.keycloak.representations.idm.CredentialRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
@@ -79,20 +77,6 @@ public class KeycloakService {
     public void changeEmail(UUID keycloakId) {
         try {
             usersResource.get(keycloakId.toString()).executeActionsEmail(List.of("UPDATE_EMAIL"));
-        } catch (WebApplicationException | ProcessingException e) {
-            throw KeycloakExceptionStrategy.of(e);
-        }
-    }
-
-    public void sendVerificationEmail(UUID keycloakId) {
-        try {
-            UserResource userResource = usersResource.get(keycloakId.toString());
-            UserRepresentation user = userResource.toRepresentation();
-            if (Boolean.TRUE.equals(user.isEmailVerified())) {
-                throw new UserAlreadyVerifiedException();
-            }
-
-            userResource.sendVerifyEmail();
         } catch (WebApplicationException | ProcessingException e) {
             throw KeycloakExceptionStrategy.of(e);
         }

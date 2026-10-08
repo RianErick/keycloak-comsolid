@@ -1,4 +1,4 @@
-export type UserProfile = {
+export type User = {
   id: string
   keycloakId: string
   username: string
@@ -8,17 +8,8 @@ export type UserProfile = {
   description?: string
 }
 
-export type UserUpdate = Pick<UserProfile, 'username' | 'firstName' | 'lastName'> & {
+export type UserUpdate = Pick<User, 'username' | 'firstName' | 'lastName'> & {
   description?: string
-}
-
-export type UserSearchPage = {
-  content: UserProfile[]
-  pageable: {
-    pageNumber: number
-    pageSize: number
-    total: number
-  }
 }
 
 export type UserRegistration = {
