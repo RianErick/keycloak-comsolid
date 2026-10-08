@@ -8,6 +8,11 @@ A aplicação demonstra como integrar o Keycloak a uma aplicação web para aute
 
 No fluxo apresentado, o frontend encaminha o usuário ao Keycloak para entrar. Depois da autenticação, recebe um token e o utiliza nas chamadas à API. O backend valida esse token e aplica as permissões associadas ao usuário, como o acesso ao próprio perfil ou a operações administrativas.
 
+## Slides da apresentação
+
+- [Baixar os slides (PDF)](docs/presentation/keycloak-na-pratica.pdf)
+- [Baixar os slides (PowerPoint)](docs/presentation/keycloak-na-pratica.pptx)
+
 ## Executar localmente
 
 Você vai precisar de Docker com Docker Compose, Java 21 e Node.js. O Keycloak e os bancos de dados rodam em containers; o backend e o frontend são iniciados em terminais separados.
