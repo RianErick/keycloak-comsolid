@@ -3,8 +3,10 @@ import { Box, Button, Callout, Card, Flex, Heading, Text, TextField } from "@rad
 import { registerUser } from "../api/register";
 
 export function RegisterForm() {
-  const [name, setName] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -16,8 +18,8 @@ export function RegisterForm() {
     setError(null);
     setSuccess(null);
     try {
-      const data = await registerUser({ name, username, password });
-      setSuccess(data.message || "Cadastro realizado.");
+      const data = await registerUser({ firstName, lastName, username, email, password });
+      setSuccess(data.message || "Usuário cadastrado. Configure o MFA no primeiro login.");
       setPassword("");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Falha ao cadastrar");
@@ -51,18 +53,52 @@ export function RegisterForm() {
       <form onSubmit={onSubmit}>
         <Flex direction="column" gap="4">
           <Box>
-            <Text as="label" size="4" weight="medium" htmlFor="reg-name">
-              Nome
+            <Text as="label" size="4" weight="medium" htmlFor="reg-first-name">
+              Primeiro nome
             </Text>
             <TextField.Root
-              id="reg-name"
+              id="reg-first-name"
               size="3"
               mt="2"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder="Maria Demo"
+              value={firstName}
+              onChange={(e) => setFirstName(e.target.value)}
+              placeholder="Maria"
               required
-              autoComplete="name"
+              maxLength={50}
+              autoComplete="given-name"
+            />
+          </Box>
+          <Box>
+            <Text as="label" size="4" weight="medium" htmlFor="reg-last-name">
+              Sobrenome
+            </Text>
+            <TextField.Root
+              id="reg-last-name"
+              size="3"
+              mt="2"
+              value={lastName}
+              onChange={(e) => setLastName(e.target.value)}
+              placeholder="Demo"
+              required
+              maxLength={50}
+              autoComplete="family-name"
+            />
+          </Box>
+          <Box>
+            <Text as="label" size="4" weight="medium" htmlFor="reg-email">
+              E-mail
+            </Text>
+            <TextField.Root
+              id="reg-email"
+              size="3"
+              mt="2"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="maria@example.com"
+              required
+              maxLength={254}
+              autoComplete="email"
             />
           </Box>
           <Box>
@@ -77,6 +113,9 @@ export function RegisterForm() {
               onChange={(e) => setUsername(e.target.value)}
               placeholder="maria"
               required
+              minLength={3}
+              maxLength={50}
+              pattern="[a-zA-Z0-9._-]+"
               autoComplete="username"
             />
           </Box>
@@ -94,6 +133,7 @@ export function RegisterForm() {
               placeholder="mínimo 8 caracteres"
               required
               minLength={8}
+              maxLength={128}
               autoComplete="new-password"
             />
           </Box>

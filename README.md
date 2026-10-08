@@ -1,22 +1,44 @@
 # setup-keycloak-consolid
 
-Ambiente local de Keycloak com uma SPA em JavaScript (sem framework) e um resource server em Java. Tudo sobe com Docker Compose.
+Ambiente local de Keycloak com uma SPA em React e um resource server em Java. O Compose sobe Keycloak, Postgres, Flyway e MailHog; frontend e backend rodam localmente.
 
 O browser autentica no Keycloak (Authorization Code + PKCE), recebe um JWT e chama a API. O Spring Boot não faz login: só valida a assinatura do token e autoriza pela role.
 
 ## Como rodar
 
 ```bash
-docker compose up --build
+cp .env.example .env
+docker compose up
 ```
 
-Na primeira subida o Maven baixa dependências e o Keycloak importa o realm. Espere o Keycloak ficar pronto (cerca de 1 minuto) e abra http://localhost:3000.
+Na primeira subida o Keycloak importa o realm. Espere o Keycloak ficar pronto (cerca de 1 minuto), depois inicie backend e frontend em terminais separados.
+
+Antes de iniciar o backend pela primeira vez, abra o console do Keycloak, entre no realm `demo`, vá em **Clients → backend-client → Credentials** e copie o client secret para `KEYCLOAK_CLIENT_SECRET` em `backend/.env`. O service account desse client já vem com as permissões de gerenciamento de usuários necessárias.
+
+Backend (Java 21 e Maven):
+
+```bash
+cd backend
+cp .env.example .env
+make up
+```
+
+Frontend (Node.js):
+
+```bash
+cd frontend
+npm ci
+npm run dev -- --host 0.0.0.0 --port 3000
+```
 
 | Serviço | URL |
 |---|---|
 | Frontend | http://localhost:3000 |
-| Backend | http://localhost:8081/api/public |
+| Backend | http://localhost:8081/v1/users |
 | Keycloak | http://localhost:8080 |
+| MailHog | http://localhost:8025 |
+
+O serviço Flyway executa `backend/src/main/resources/db/migration` ao subir o Compose. Emails enviados pelo Keycloak são capturados pelo MailHog; abra a interface em `http://localhost:8025`.
 
 Console admin do Keycloak: `admin` / `admin`. No canto superior esquerdo, troque o realm `master` para `demo`.
 
@@ -31,11 +53,17 @@ Console admin do Keycloak: `admin` / `admin`. No canto superior esquerdo, troque
 
 | Método | Caminho | Auth |
 |---|---|---|
-| `GET` | `/api/public` | livre |
-| `GET` | `/api/me` | JWT |
-| `GET` | `/api/admin` | JWT + role `admin` |
+| `POST` | `/v1/users` | livre |
+| `GET` | `/v1/users` | JWT + role `admin` (filtros e paginação) |
+| `GET` | `/v1/users/me` | JWT |
+| `GET` | `/v1/users/{username}` | JWT + role `admin` |
+| `PUT` | `/v1/users/{username}` | JWT + usuário dono ou role `admin` |
+| `PATCH` | `/v1/users/{username}/email` | JWT + usuário dono ou role `admin` |
+| `PATCH` | `/v1/users/{username}/email/verification` | livre |
 
-Sem token, `/api/me` responde **401**. Com a Alice, `/api/admin` responde **403**. Com o Bob, **200**.
+A troca de email é iniciada separadamente: o Keycloak pede reautenticação, solicita o novo endereço e só altera a conta depois da confirmação enviada para esse endereço.
+
+Sem token, `/v1/users/me` responde **401**. Com a Alice, `/v1/users/alice` responde **403**. Com o Bob, **200**.
 
 ## Fluxo
 
@@ -45,21 +73,21 @@ Sem token, `/api/me` responde **401**. Com a Alice, `/api/admin` responde **403*
 4. As chamadas autenticadas vão com `Authorization: Bearer <access_token>`.
 5. O Java valida o JWT nas chaves JWKS do realm `demo` e lê `realm_access.roles`.
 
-O issuer do token é `http://localhost:8080/realms/demo` (o que o browser vê). O backend busca as chaves em `http://keycloak:8080/.../certs` (hostname interno do Compose).
+O issuer e o endpoint JWKS do token usam `http://localhost:8080/realms/demo`, acessível pelo backend rodando no host.
 
 ## Estrutura
 
 ```
 .
-├── docker-compose.yml
-├── keycloak/realm-demo.json
+├── compose.yaml      Keycloak, Postgres, Flyway e MailHog
+├── infra/realm-demo.json
 ├── backend/          Spring Boot 3.4 · Java 21 · resource server
-└── frontend/         HTML, CSS e JS · nginx
+└── frontend/         React · Vite
 ```
 
 - `frontend/` implementa o OIDC na unha (sem `keycloak-js`).
 - `backend/` é stateless. Roles do token viram `ROLE_USER` / `ROLE_ADMIN`.
-- `keycloak/realm-demo.json` define o realm `demo`, o client público `frontend` e os dois usuários.
+- `infra/realm-demo.json` define o realm `demo`, o client público `frontend` e os dois usuários.
 
 ## Resetar o realm
 
@@ -67,7 +95,7 @@ Alterações feitas na UI do Keycloak ficam no Postgres. Para voltar ao JSON ini
 
 ```bash
 docker compose down -v
-docker compose up --build
+docker compose up
 ```
 
 Sem `-v` o import não roda de novo.

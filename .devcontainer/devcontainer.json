@@ -1,0 +1,90 @@
+{
+  "name": "setup-keycloak-consolid",
+  "image": "ghcr.io/rianerick/setup-keycloak-consolid:devcontainer",
+  "workspaceMount": "source=${localWorkspaceFolder},target=${localWorkspaceFolder},type=bind",
+  "workspaceFolder": "${localWorkspaceFolder}",
+  "initializeCommand": "bash .devcontainer/scripts/init.sh",
+  "postCreateCommand": "bash .devcontainer/scripts/post-create.sh",
+  "forwardPorts": [3000, 8080, 8081],
+  "mounts": [
+    "source=${localEnv:HOME}/.codex,target=/home/vscode/.codex,type=bind",
+    "source=${localEnv:HOME}/.kube,target=/home/vscode/.kube,type=bind",
+    "source=/var/run/docker.sock,target=/var/run/docker.sock,type=bind"
+  ],
+  "runArgs": ["--network=host", "--security-opt=label=disable"],
+  "remoteEnv": {
+    "PATH": "${containerEnv:PATH}:/home/vscode/.bun/bin"
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "vscjava.vscode-java-pack",
+        "vmware.vscode-spring-boot",
+        "ms-azuretools.vscode-docker",
+        "ms-kubernetes-tools.vscode-kubernetes-tools",
+        "Tim-Koehler.helm-intellisense",
+        "redhat.vscode-yaml",
+        "dbaeumer.vscode-eslint",
+        "esbenp.prettier-vscode",
+        "josevseb.google-java-format-for-vs-code"
+      ],
+      "settings": {
+        "[java]": {
+          "editor.defaultFormatter": "josevseb.google-java-format-for-vs-code",
+          "editor.insertSpaces": true,
+          "editor.tabSize": 2
+        },
+        "[javascript]": {
+          "editor.defaultFormatter": "esbenp.prettier-vscode"
+        },
+        "[javascriptreact]": {
+          "editor.defaultFormatter": "esbenp.prettier-vscode"
+        },
+        "[json]": {
+          "editor.defaultFormatter": "esbenp.prettier-vscode"
+        },
+        "[jsonc]": {
+          "editor.defaultFormatter": "esbenp.prettier-vscode"
+        },
+        "[typescript]": {
+          "editor.defaultFormatter": "esbenp.prettier-vscode"
+        },
+        "[typescriptreact]": {
+          "editor.defaultFormatter": "esbenp.prettier-vscode"
+        },
+        "[yaml]": {
+          "editor.defaultFormatter": "esbenp.prettier-vscode"
+        },
+        "editor.formatOnSave": true,
+        "editor.codeActionsOnSave": {
+          "source.fixAll.eslint": "explicit",
+          "source.organizeImports": "explicit"
+        },
+        "java.configuration.updateBuildConfiguration": "automatic",
+        "java.import.maven.enabled": true,
+        "java.import.projectSelection": "automatic",
+        "java.import.maven.offline.enabled": false,
+        "java.autobuild.enabled": true,
+        "java.compile.nullAnalysis.mode": "automatic",
+        "java.import.exclusions": [
+          "**/frontend/**",
+          "**/node_modules/**"
+        ],
+        "eslint.workingDirectories": [
+          {
+            "directory": "${workspaceFolder}/frontend",
+            "changeProcessCWD": true
+          }
+        ],
+        "terminal.integrated.cwd": "${workspaceFolder}",
+        "terminal.integrated.defaultProfile.linux": "zsh",
+        "terminal.integrated.profiles.linux": {
+          "zsh": {
+            "path": "/usr/bin/zsh"
+          }
+        },
+        "js/ts.tsdk.path": "${workspaceFolder}/frontend/node_modules/typescript/lib"
+      }
+    }
+  }
+}

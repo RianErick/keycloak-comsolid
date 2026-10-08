@@ -25,14 +25,11 @@ export function apiHint(status: number, path: string) {
   if (status === 403) {
     return "Autenticado, mas sem a role admin.";
   }
-  if (status === 200 && path === "/admin") {
+  if (status === 200 && path === "/v1/users/me") {
+    return "JWT validado. O backend retornou seu usuário.";
+  }
+  if (status === 200 && path.startsWith("/v1/users/")) {
     return "Role admin aceita pelo backend.";
-  }
-  if (status === 200 && path === "/me") {
-    return "JWT validado. O backend leu o titular.";
-  }
-  if (status === 200 && path === "/public") {
-    return "Endpoint livre, sem Authorization.";
   }
   return null;
 }

@@ -1,0 +1,9 @@
+package com.example.keycloakdemo.exception;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ResponseStatus;
+
+@ResponseStatus(HttpStatus.NOT_FOUND)
+public class KeycloakNotFoundException extends BaseException {
+    public KeycloakNotFoundException() { super("Keycloak user not found"); }
+}

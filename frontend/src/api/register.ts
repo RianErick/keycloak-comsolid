@@ -1,13 +1,15 @@
 import { config } from "../auth";
 
 export interface RegisterInput {
-  name: string;
+  firstName: string;
+  lastName: string;
   username: string;
+  email: string;
   password: string;
 }
 
 export async function registerUser(input: RegisterInput) {
-  const response = await fetch(`${config().apiUrl}/public/register`, {
+  const response = await fetch(`${config().apiUrl}/v1/users`, {
     method: "POST",
     headers: {
       Accept: "application/json",

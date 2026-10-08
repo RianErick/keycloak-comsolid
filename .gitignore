@@ -10,3 +10,5 @@ frontend/dist/
 .mvn/
 backend/.mvn/
 backend/target/
+backend/.env
+.env

@@ -30,15 +30,14 @@ export interface ApiCallResult {
   tokens?: TokenSet | null;
 }
 
-export interface AppProfile {
+export interface User {
   id?: string;
-  keycloakUserId?: string;
+  keycloakId?: string;
   username?: string;
-  fullName?: string;
-  department?: string;
-  employeeCode?: string;
-  customerTier?: string;
-  internalNote?: string;
+  email?: string;
+  firstName?: string;
+  lastName?: string;
+  description?: string;
   createdAt?: string;
-  source?: string;
+  updatedAt?: string;
 }

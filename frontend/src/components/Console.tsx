@@ -17,15 +17,14 @@ import { ExitIcon, ReaderIcon } from "@radix-ui/react-icons";
 import { callApi, decodeJwt, logout, realmRoles } from "../auth";
 import { splitJwt } from "../lib/jwt";
 import { apiHint, formatExpiry, remainingLabel } from "../lib/format";
-import type { ApiCallResult, AppProfile, TokenSet } from "../types";
+import type { ApiCallResult, TokenSet, User } from "../types";
 import { ClaimsDialog } from "./ClaimsDialog";
 import { DemoPlaybook } from "./DemoPlaybook";
 import { PresentationFlow } from "./PresentationFlow";
 
 const endpoints = [
-  { value: "/public", label: "/api/public", auth: false },
-  { value: "/me", label: "/api/me", auth: true },
-  { value: "/admin", label: "/api/admin", auth: true }
+  { value: "/v1/users/me", label: "GET /v1/users/me", auth: true },
+  { value: "/v1/users/alice", label: "GET /v1/users/alice", auth: true }
 ] as const;
 
 function TokenPreview({ token }: { token: string }) {
@@ -51,12 +50,12 @@ export function Console({
   const claims = useMemo(() => decodeJwt(tokens.access_token), [tokens.access_token]);
   const roles = realmRoles(claims);
   const [claimsOpen, setClaimsOpen] = useState(false);
-  const [path, setPath] = useState<(typeof endpoints)[number]["value"]>("/me");
+  const [path, setPath] = useState<(typeof endpoints)[number]["value"]>("/v1/users/me");
   const [pending, setPending] = useState(false);
   const [result, setResult] = useState<ApiCallResult | null>(null);
   const [apiError, setApiError] = useState<string | null>(null);
   const [now, setNow] = useState(() => Date.now());
-  const [appProfile, setAppProfile] = useState<AppProfile | null>(null);
+  const [user, setUser] = useState<User | null>(null);
   const [profileError, setProfileError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -68,14 +67,13 @@ export function Console({
     let cancelled = false;
     (async () => {
       try {
-        const response = await callApi("/me", true);
+        const response = await callApi("/v1/users/me", true);
         if (cancelled) {
           return;
         }
-        const body = response.body as { appProfile?: AppProfile | null };
-        const profile = body.appProfile;
-        const hasProfile = Boolean(profile && profile.keycloakUserId);
-        setAppProfile(hasProfile ? profile! : null);
+        const profile = response.body as User;
+        const hasProfile = Boolean(profile && profile.keycloakId);
+        setUser(hasProfile ? profile! : null);
         setProfileError(hasProfile ? null : "Sem registro local para este subject (sub) do JWT.");
         if (response.tokens) {
           onTokensChange(response.tokens);
@@ -210,32 +208,36 @@ export function Console({
           Perfil local (PostgreSQL)
         </Heading>
         <Text as="p" size="4" color="gray" mb="4">
-          Dados que existem só no backend. O vínculo com o Keycloak é o{" "}
-          <Code size="3">keycloakUserId</Code> (mesmo UUID do claim <Code size="3">sub</Code> do JWT).
+          Dados do usuário salvos no backend. O vínculo com o Keycloak é o{" "}
+          <Code size="3">keycloakId</Code> (mesmo UUID do claim <Code size="3">sub</Code> do JWT).
         </Text>
-        {appProfile ? (
+        {user ? (
           <DataList.Root size="2" className="data-present">
             <DataList.Item>
               <DataList.Label minWidth="160px">Keycloak UUID</DataList.Label>
               <DataList.Value>
-                <Code size="3">{appProfile.keycloakUserId}</Code>
+                <Code size="3">{user.keycloakId}</Code>
               </DataList.Value>
             </DataList.Item>
             <DataList.Item>
-              <DataList.Label minWidth="160px">Matrícula</DataList.Label>
-              <DataList.Value>{appProfile.employeeCode}</DataList.Value>
+              <DataList.Label minWidth="160px">Usuário</DataList.Label>
+              <DataList.Value>{user.username}</DataList.Value>
             </DataList.Item>
             <DataList.Item>
-              <DataList.Label minWidth="160px">Departamento</DataList.Label>
-              <DataList.Value>{appProfile.department}</DataList.Value>
+              <DataList.Label minWidth="160px">E-mail</DataList.Label>
+              <DataList.Value>{user.email}</DataList.Value>
             </DataList.Item>
             <DataList.Item>
-              <DataList.Label minWidth="160px">Tier interno</DataList.Label>
-              <DataList.Value>{appProfile.customerTier}</DataList.Value>
+              <DataList.Label minWidth="160px">Primeiro nome</DataList.Label>
+              <DataList.Value>{user.firstName}</DataList.Value>
             </DataList.Item>
             <DataList.Item>
-              <DataList.Label minWidth="160px">Nota interna</DataList.Label>
-              <DataList.Value>{appProfile.internalNote}</DataList.Value>
+              <DataList.Label minWidth="160px">Sobrenome</DataList.Label>
+              <DataList.Value>{user.lastName}</DataList.Value>
+            </DataList.Item>
+            <DataList.Item>
+              <DataList.Label minWidth="160px">Descrição</DataList.Label>
+              <DataList.Value>{user.description}</DataList.Value>
             </DataList.Item>
           </DataList.Root>
         ) : (
@@ -250,7 +252,7 @@ export function Console({
           Resource server
         </Heading>
         <Text as="p" size="4" color="gray" mb="3">
-          GET no backend Java. <Code size="3">/me</Code> e <Code size="3">/admin</Code> enviam o Bearer.
+          GET no backend Java. Os endpoints de usuário enviam o Bearer.
           {selected.auth ? " Este endpoint exige token." : " Este endpoint é público."}
         </Text>
         {selected.auth ? (
