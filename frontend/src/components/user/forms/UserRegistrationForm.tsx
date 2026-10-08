@@ -1,4 +1,4 @@
-import { type FormEvent } from 'react'
+import { type SubmitEvent } from 'react'
 import { LoaderCircle } from 'lucide-react'
 import type { UserRegistration } from '@/types/user'
 import { Button } from '@/components/ui/button'
@@ -11,7 +11,7 @@ type UserRegistrationFormProps = {
 }
 
 export function UserRegistrationForm({ busy, onSubmit }: UserRegistrationFormProps) {
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  function handleSubmit(event: SubmitEvent<HTMLFormElement>) {
     event.preventDefault()
     const form = new FormData(event.currentTarget)
     onSubmit({
@@ -42,7 +42,7 @@ export function UserRegistrationForm({ busy, onSubmit }: UserRegistrationFormPro
       </div>
       <Button type="submit" className="mt-1 h-10 w-full" disabled={busy}>
         {busy && <LoaderCircle className="animate-spin" aria-hidden="true" />}
-        {busy ? 'Creating account…' : 'Create account'}
+        {busy ? 'Registering…' : 'Register'}
       </Button>
     </form>
   )

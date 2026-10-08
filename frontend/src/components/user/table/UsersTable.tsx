@@ -16,13 +16,20 @@ type UsersTableProps = {
 export function UsersTable({ currentUser, currentUserId, isAdmin }: UsersTableProps) {
   const directory = useUsers()
   const [editingUser, setEditingUser] = useState<User | null>(null)
+  const users = directory.query.data?.content ?? []
+  const total = directory.query.data?.pageable.total ?? 0
+  const pageCount = Math.max(1, Math.ceil(total / 10))
   const visibleUsers = currentUser
-    ? [currentUser, ...directory.users.filter((user) => user.keycloakId !== currentUser.keycloakId)]
-    : directory.users
+    ? [currentUser, ...users.filter((user) => user.keycloakId !== currentUser.keycloakId)]
+    : users
+
+  const error = directory.actions.error || (directory.query.error instanceof Error
+    ? directory.query.error.message
+    : directory.query.error ? 'Could not load users.' : '')
 
   return (
     <div className="grid gap-4">
-      {directory.error && <Alert variant="destructive"><AlertDescription>{directory.error}</AlertDescription></Alert>}
+      {error && <Alert variant="destructive"><AlertDescription>{error}</AlertDescription></Alert>}
       {directory.message && <Alert><AlertDescription>{directory.message}</AlertDescription></Alert>}
       <Table>
         <TableHeader>
@@ -34,7 +41,7 @@ export function UsersTable({ currentUser, currentUserId, isAdmin }: UsersTablePr
           </TableRow>
         </TableHeader>
         <TableBody>
-          {directory.loading ? (
+          {directory.query.isFetching ? (
             <TableRow><TableCell colSpan={4}>Loading users…</TableCell></TableRow>
           ) : visibleUsers.length === 0 ? (
             <TableRow><TableCell colSpan={4}>No users found.</TableCell></TableRow>
@@ -48,10 +55,10 @@ export function UsersTable({ currentUser, currentUserId, isAdmin }: UsersTablePr
                   user={user}
                   currentUserId={currentUserId}
                   isAdmin={isAdmin}
-                  busy={directory.busy}
+                  busy={directory.actions.busy}
                   onEdit={setEditingUser}
-                  onDelete={directory.remove}
-                  onChangeEmail={directory.changeEmail}
+                  onDelete={directory.actions.remove}
+                  onChangeEmail={directory.actions.changeEmail}
                 />
               </TableCell>
             </TableRow>
@@ -59,18 +66,18 @@ export function UsersTable({ currentUser, currentUserId, isAdmin }: UsersTablePr
         </TableBody>
       </Table>
       <div className="flex items-center justify-between">
-        <p className="text-sm text-muted-foreground">{directory.total} users</p>
+        <p className="text-sm text-muted-foreground">{total} users</p>
         <div className="flex gap-2">
-          <Button size="sm" variant="outline" disabled={directory.page === 0 || directory.loading} onClick={() => directory.setPage(directory.page - 1)}>Previous</Button>
-          <Button size="sm" variant="outline" disabled={directory.page + 1 >= directory.pageCount || directory.loading} onClick={() => directory.setPage(directory.page + 1)}>Next</Button>
+          <Button size="sm" variant="outline" disabled={directory.page === 0 || directory.query.isFetching} onClick={() => directory.setPage(directory.page - 1)}>Previous</Button>
+          <Button size="sm" variant="outline" disabled={directory.page + 1 >= pageCount || directory.query.isFetching} onClick={() => directory.setPage(directory.page + 1)}>Next</Button>
         </div>
       </div>
       <UserEditDialog
         key={editingUser?.id ?? 'closed'}
         user={editingUser}
-        busy={directory.busy}
+        busy={directory.actions.busy}
         onClose={() => setEditingUser(null)}
-        onSave={directory.update}
+        onSave={directory.actions.update}
       />
     </div>
   )

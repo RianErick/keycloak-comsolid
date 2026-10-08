@@ -23,12 +23,12 @@ function App() {
   if (session.currentUser) {
     return (
       <UsersPage
-        profile={session.currentUser.profile}
+        user={session.currentUser.user}
         username={session.currentUser.username}
         userId={session.currentUser.keycloakId}
         isAdmin={session.currentUser.isAdmin}
         error={session.error}
-        onRetry={session.retryProfile}
+        onRetry={session.retryUser}
       />
     )
   }

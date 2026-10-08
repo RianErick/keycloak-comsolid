@@ -21,7 +21,6 @@ export function UserRowActions({
   onChangeEmail,
 }: UserRowActionsProps) {
   const canManageUser = isAdmin || user.keycloakId === currentUserId
-
   function confirmDelete() {
     if (window.confirm(`Delete user ${user.username}?`)) onDelete(user.username)
   }
@@ -32,21 +31,21 @@ export function UserRowActions({
         size="sm"
         variant="outline"
         disabled={busy || !canManageUser}
-        title={!canManageUser ? 'You can only edit your own account.' : undefined}
+        title={!canManageUser ? 'Only admins can edit other users.' : undefined}
         onClick={() => onEdit(user)}
       >Edit</Button>
       <Button
         size="sm"
         variant="destructive"
         disabled={busy || !canManageUser}
-        title={!canManageUser ? 'You can only delete your own account.' : undefined}
+        title={!canManageUser ? 'Only admins can delete other users.' : undefined}
         onClick={confirmDelete}
       >Delete</Button>
       <Button
         size="sm"
         variant="outline"
         disabled={busy || !canManageUser}
-        title={!canManageUser ? 'You can only request an email change for your own account.' : undefined}
+        title={!canManageUser ? 'Only admins can request email changes for other users.' : undefined}
         onClick={() => onChangeEmail(user.username)}
       >Change email</Button>
     </div>

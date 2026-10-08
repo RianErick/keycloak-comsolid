@@ -1,74 +1,51 @@
 import { useEffect, useState } from 'react'
-import { keycloak, keycloakInitPromise } from '@/services/keycloak.service'
+import { useQuery } from '@tanstack/react-query'
+import { keycloak, keycloakInit } from '@/services/keycloak.service'
 import { getCurrentUser } from '@/services/user.service'
-import type { User } from '@/types/user'
+
+type KeycloakStatus = 'initializing' | 'ready' | 'error'
 
 export function useAuth() {
-  const [ready, setReady] = useState(false)
-  const [profile, setProfile] = useState<User | null>(null)
-  const [error, setError] = useState('')
-  const [profileAttempt, setProfileAttempt] = useState(0)
+  const [keycloakStatus, setKeycloakStatus] = useState<KeycloakStatus>('initializing')
 
   useEffect(() => {
     let cancelled = false
-    keycloakInitPromise
+    keycloakInit
       .then(async () => {
-        if (keycloak.authenticated) {
-          await keycloak.updateToken(-1).catch(() => undefined)
-        }
-
-        if (!cancelled) {
-          setReady(true)
-        }
+        if (keycloak.authenticated) await keycloak.updateToken(-1).catch(() => undefined)
+        if (!cancelled) setKeycloakStatus('ready')
       })
       .catch(() => {
-        if (cancelled) {
-          return
-        }
-
-        setError('Could not connect to Keycloak. Make sure it is running.')
-        setReady(true)
+        if (cancelled) return
+        setKeycloakStatus('error')
       })
+
     return () => { cancelled = true }
   }, [])
 
-  useEffect(() => {
-    if (!ready || !keycloak.authenticated) {
-      return
-    }
-
-    let cancelled = false
-    setError('')
-    getCurrentUser()
-      .then((user) => {
-        if (!cancelled) {
-          setProfile(user)
-        }
-      })
-      .catch((reason: unknown) => {
-        if (!cancelled) {
-          setError(reason instanceof Error ? reason.message : 'Could not load your profile.')
-        }
-      })
-    return () => { cancelled = true }
-  }, [profileAttempt, ready])
+  const userQuery = useQuery({
+    queryKey: ['users', 'current'],
+    queryFn: getCurrentUser,
+    retry: false,
+    staleTime: 5 * 60_000,
+    enabled: keycloakStatus === 'ready' && Boolean(keycloak.authenticated),
+  })
 
   const currentUser = keycloak.authenticated
     ? {
         keycloakId: keycloak.tokenParsed?.sub,
         username: keycloak.tokenParsed?.preferred_username,
         isAdmin: keycloak.realmAccess?.roles.includes('admin') ?? false,
-        profile,
+        user: userQuery.data ?? null,
       }
     : null
 
   return {
-    ready,
+    ready: keycloakStatus !== 'initializing',
     currentUser,
-    error,
-    retryProfile: () => {
-      setProfile(null)
-      setProfileAttempt((attempt) => attempt + 1)
-    },
+    error: keycloakStatus === 'error'
+      ? 'Could not connect to Keycloak. Make sure it is running.'
+      : userQuery.error instanceof Error ? userQuery.error.message : '',
+    retryUser: () => { void userQuery.refetch() },
   }
 }

@@ -14,9 +14,9 @@ export function LoginPage({ error, onRegister }: LoginPageProps) {
       <Card className="w-full max-w-md">
         <CardHeader><CardTitle className="text-xl">Demo Keycloak</CardTitle></CardHeader>
         <CardContent className="grid gap-4">
-          <p className="text-sm text-muted-foreground">Sign in to view your profile.</p>
+          <p className="text-sm text-muted-foreground">Sign in to continue.</p>
           <Button className="w-full" onClick={() => login()}>Sign in with Keycloak</Button>
-          <Button className="w-full" variant="secondary" onClick={onRegister}>Create account</Button>
+          <Button className="w-full" variant="secondary" onClick={onRegister}>Register</Button>
           {error && <Alert variant="destructive"><AlertDescription>{error}</AlertDescription></Alert>}
         </CardContent>
       </Card>

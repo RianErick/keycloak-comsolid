@@ -6,7 +6,7 @@ export const keycloak = new Keycloak({
   clientId: import.meta.env.VITE_KEYCLOAK_CLIENT_ID || 'frontend-client',
 })
 
-export const keycloakInitPromise = keycloak.init({
+export const keycloakInit = keycloak.init({
   onLoad: 'check-sso',
   pkceMethod: 'S256',
   checkLoginIframe: false,

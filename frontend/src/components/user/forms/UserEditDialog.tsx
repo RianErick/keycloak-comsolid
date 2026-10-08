@@ -1,4 +1,4 @@
-import { type FormEvent } from 'react'
+import { type SubmitEvent } from 'react'
 import { Button } from '@/components/ui/button'
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
@@ -13,10 +13,9 @@ type UserEditDialogProps = {
 }
 
 export function UserEditDialog({ user, busy, onClose, onSave }: UserEditDialogProps) {
-  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: SubmitEvent<HTMLFormElement>) {
     event.preventDefault()
     if (!user) return
-
     const form = new FormData(event.currentTarget)
     const changes: UserUpdate = {
       username: String(form.get('username') ?? ''),
@@ -33,7 +32,7 @@ export function UserEditDialog({ user, busy, onClose, onSave }: UserEditDialogPr
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Edit user</DialogTitle>
-          <DialogDescription>Update the account details.</DialogDescription>
+          <DialogDescription>Update user details.</DialogDescription>
         </DialogHeader>
         {user && (
           <form id="edit-user-form" className="grid gap-3" onSubmit={handleSubmit}>

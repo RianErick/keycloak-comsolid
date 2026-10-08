@@ -4,24 +4,21 @@ import type { User, UserRegistration, UserUpdate } from '@/types/user'
 import { getAccessToken } from '@/services/keycloak.service'
 
 export async function searchUsers(pageNumber: number, pageSize: number): Promise<Page<User>> {
-  const response = await api.get<Page<User>>('/v1/users', {
+  return (await api.get<Page<User>>('/v1/users', {
     params: { pageNumber, pageSize, orderBy: 'username' },
-  })
-  return response.data
+  })).data
 }
 
 export async function getCurrentUser(): Promise<User> {
   const token = await getAccessToken()
-  const response = await api.get<User>('/v1/users/me', {
+  return (await api.get<User>('/v1/users/me', {
     headers: { Authorization: `Bearer ${token}` },
-  })
-  return response.data
+  })).data
 }
 
 export async function registerUser(user: UserRegistration): Promise<void> {
   await api.post('/v1/users', user)
 }
-
 
 export async function updateUser(username: string, user: UserUpdate): Promise<void> {
   const token = await getAccessToken()
