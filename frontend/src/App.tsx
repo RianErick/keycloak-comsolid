@@ -13,7 +13,7 @@ function App() {
     return (
       <main className="grid min-h-screen w-full place-items-center bg-neutral-200 p-6">
         <Card className="w-full max-w-md">
-          <CardHeader><CardTitle className="text-xl">Demo Keycloak</CardTitle></CardHeader>
+          <CardHeader><CardTitle className="text-xl">Keycloak Demo</CardTitle></CardHeader>
           <CardContent><p>Connecting to Keycloak…</p></CardContent>
         </Card>
       </main>

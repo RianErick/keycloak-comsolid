@@ -57,7 +57,14 @@ export function useUsers() {
           return false
         }
       },
-      remove: (username: string) => actionMutation.mutate({ type: 'delete', username }),
+      remove: async (username: string) => {
+        try {
+          await actionMutation.mutateAsync({ type: 'delete', username })
+          return true
+        } catch {
+          return false
+        }
+      },
       changeEmail: (username: string) => actionMutation.mutate({ type: 'changeEmail', username }),
     },
     message,

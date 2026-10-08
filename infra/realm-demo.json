@@ -1,8 +1,8 @@
 {
   "id": "demo",
   "realm": "demo",
-  "displayName": "Demo Keycloak",
-  "displayNameHtml": "<strong>Demo Keycloak</strong>",
+  "displayName": "Keycloak Demo",
+  "displayNameHtml": "<strong>Keycloak Demo</strong>",
   "enabled": true,
   "sslRequired": "none",
   "registrationAllowed": false,

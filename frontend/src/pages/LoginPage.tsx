@@ -16,7 +16,7 @@ export function LoginPage({ error, onRegister }: LoginPageProps) {
         <CardHeader className="gap-4 px-6">
           <div className="flex items-center gap-3">
             <ShieldCheck aria-hidden="true" className="size-7 shrink-0 text-neutral-700" />
-            <CardTitle className="text-2xl font-semibold tracking-tight">Demo Keycloak</CardTitle>
+            <CardTitle className="text-2xl font-semibold tracking-tight">Keycloak Demo</CardTitle>
           </div>
           <p className="text-sm text-muted-foreground">Sign in to continue to your account.</p>
         </CardHeader>

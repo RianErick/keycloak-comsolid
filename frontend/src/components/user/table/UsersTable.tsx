@@ -6,6 +6,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { UserEditDialog } from '@/components/user/forms/UserEditDialog'
 import { UserRowActions } from '@/components/user/table/UserRowActions'
 import { useUsers } from '@/hooks/useUsers'
+import { logout } from '@/services/keycloak.service'
 import type { User } from '@/types/user'
 
 type UsersTableProps = {
@@ -27,6 +28,11 @@ export function UsersTable({ currentUser, currentUserId, isAdmin }: UsersTablePr
   const error = directory.actions.error || (directory.query.error instanceof Error
     ? directory.query.error.message
     : directory.query.error ? 'Could not load users.' : '')
+
+  async function deleteUser(username: string) {
+    const deleted = await directory.actions.remove(username)
+    if (deleted && username === currentUser?.username) await logout()
+  }
 
   return (
     <div className="grid gap-4">
@@ -61,7 +67,7 @@ export function UsersTable({ currentUser, currentUserId, isAdmin }: UsersTablePr
                   isAdmin={isAdmin}
                   busy={directory.actions.busy}
                   onEdit={setEditingUser}
-                  onDelete={directory.actions.remove}
+                  onDelete={(username) => { void deleteUser(username) }}
                   onChangeEmail={directory.actions.changeEmail}
                 />
               </TableCell>
