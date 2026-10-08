@@ -17,21 +17,18 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.http.ResponseEntity;
 
-@Tag(name = "Users", description = "User registration and profile lookup")
+@Tag(name = "Users", description = "User registration, search, and profile management")
 public interface UserControllerDocs {
 
     @Operation(
-        summary = "Search users",
-        security = @SecurityRequirement(name = "bearerAuth"),
+        summary = "Search users (public)",
         responses = {
             @ApiResponse(
                 responseCode = "200",
                 description = "Users found",
                 content = @Content(schema = @Schema(implementation = ApplicationPage.class))
             ),
-            @ApiResponse(responseCode = "400", description = "Invalid query parameters", content = @Content),
-            @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content),
-            @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content)
+            @ApiResponse(responseCode = "400", description = "Invalid query parameters", content = @Content)
         }
     )
     ResponseEntity<ApplicationPage<UserResponse>> search(@Valid @ParameterObject UserQuery query);
@@ -66,15 +63,12 @@ public interface UserControllerDocs {
     UserResponse findSelf();
 
     @Operation(
-        summary = "Get a user by username",
-        security = @SecurityRequirement(name = "bearerAuth"),
+        summary = "Get a user by username (public)",
         responses = {
             @ApiResponse(
                 responseCode = "200",
                 description = "User profile",
                 content = @Content(schema = @Schema(implementation = UserResponse.class))),
-            @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content),
-            @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content),
             @ApiResponse(responseCode = "404", description = "User not found", content = @Content)
         })
     UserResponse find(@PathVariable String username);
@@ -99,6 +93,18 @@ public interface UserControllerDocs {
     );
 
     @Operation(
+        summary = "Delete a user (self or admin only)",
+        security = @SecurityRequirement(name = "bearerAuth"),
+        responses = {
+            @ApiResponse(responseCode = "204", description = "User deleted", content = @Content),
+            @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content),
+            @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content),
+            @ApiResponse(responseCode = "404", description = "User not found", content = @Content),
+            @ApiResponse(responseCode = "502", description = "Keycloak request failed", content = @Content)
+        })
+    ResponseEntity<Void> delete(@PathVariable String username);
+
+    @Operation(
         summary = "Start the email change confirmation flow",
         security = @SecurityRequirement(name = "bearerAuth"),
         responses = {
@@ -112,9 +118,12 @@ public interface UserControllerDocs {
     ResponseEntity<Void> requestEmailUpdate(@PathVariable String username);
 
     @Operation(
-        summary = "Resend the email verification message",
+        summary = "Resend the email verification message (admin only)",
+        security = @SecurityRequirement(name = "bearerAuth"),
         responses = {
             @ApiResponse(responseCode = "204", description = "Verification email sent", content = @Content),
+            @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content),
+            @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content),
             @ApiResponse(responseCode = "404", description = "User not found", content = @Content),
             @ApiResponse(responseCode = "409", description = "Email is already verified", content = @Content),
             @ApiResponse(responseCode = "502", description = "Keycloak request failed", content = @Content)

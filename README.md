@@ -1,6 +1,6 @@
 # setup-keycloak-consolid
 
-Ambiente local de Keycloak com uma SPA em React e um resource server em Java. O Compose sobe Keycloak, Postgres, Flyway e MailHog; frontend e backend rodam localmente.
+Ambiente local de Keycloak com uma SPA em React e um resource server em Java. O Compose sobe Keycloak, dois Postgres independentes (um para o Keycloak e outro para o backend), Flyway e MailHog; frontend e backend rodam localmente.
 
 O browser autentica no Keycloak (Authorization Code + PKCE), recebe um JWT e chama a API. O Spring Boot não faz login: só valida a assinatura do token e autoriza pela role.
 
@@ -28,12 +28,13 @@ Frontend (Node.js):
 ```bash
 cd frontend
 npm ci
-npm run dev -- --host 0.0.0.0 --port 3000
+cp .env.example .env
+npm run dev -- --host 0.0.0.0
 ```
 
 | Serviço | URL |
 |---|---|
-| Frontend | http://localhost:3000 |
+| Frontend | http://localhost:5173 |
 | Backend | http://localhost:8081/v1/users |
 | Keycloak | http://localhost:8080 |
 | MailHog | http://localhost:8025 |
@@ -42,28 +43,26 @@ O serviço Flyway executa `backend/src/main/resources/db/migration` ao subir o C
 
 Console admin do Keycloak: `admin` / `admin`. No canto superior esquerdo, troque o realm `master` para `demo`.
 
-## Usuários
+## Contas
 
-| Usuário | Senha | Roles |
-|---|---|---|
-| `alice` | `alice123` | `user` |
-| `bob` | `bob123` | `user`, `admin` |
+O realm não inclui contas interativas pré-cadastradas. Crie uma conta pela opção **Create account** no frontend. A conta técnica `service-account-backend-client` é usada internamente pela API para gerenciar usuários no Keycloak.
 
 ## Endpoints
 
 | Método | Caminho | Auth |
 |---|---|---|
 | `POST` | `/v1/users` | livre |
-| `GET` | `/v1/users` | JWT + role `admin` (filtros e paginação) |
+| `GET` | `/v1/users` | público (filtros e paginação) |
 | `GET` | `/v1/users/me` | JWT |
-| `GET` | `/v1/users/{username}` | JWT + role `admin` |
+| `GET` | `/v1/users/{username}` | público |
 | `PUT` | `/v1/users/{username}` | JWT + usuário dono ou role `admin` |
+| `DELETE` | `/v1/users/{username}` | JWT + usuário dono ou role `admin` |
 | `PATCH` | `/v1/users/{username}/email` | JWT + usuário dono ou role `admin` |
-| `PATCH` | `/v1/users/{username}/email/verification` | livre |
+| `PATCH` | `/v1/users/{username}/email/verifications` | JWT + role `admin` |
 
 A troca de email é iniciada separadamente: o Keycloak pede reautenticação, solicita o novo endereço e só altera a conta depois da confirmação enviada para esse endereço.
 
-Sem token, `/v1/users/me` responde **401**. Com a Alice, `/v1/users/alice` responde **403**. Com o Bob, **200**.
+Sem token, `/v1/users/me` responde **401**. As rotas administrativas exigem uma conta à qual a role `admin` tenha sido atribuída.
 
 ## Fluxo
 
@@ -82,12 +81,12 @@ O issuer e o endpoint JWKS do token usam `http://localhost:8080/realms/demo`, ac
 ├── compose.yaml      Keycloak, Postgres, Flyway e MailHog
 ├── infra/realm-demo.json
 ├── backend/          Spring Boot 3.4 · Java 21 · resource server
-└── frontend/         React · Vite
+└── frontend/         React · Vite · keycloak-js
 ```
 
-- `frontend/` implementa o OIDC na unha (sem `keycloak-js`).
+- `frontend/` usa `keycloak-js` para autenticação, Axios para chamadas à API e componentes shadcn nas telas de cadastro e perfil.
 - `backend/` é stateless. Roles do token viram `ROLE_USER` / `ROLE_ADMIN`.
-- `infra/realm-demo.json` define o realm `demo`, o client público `frontend` e os dois usuários.
+- `infra/realm-demo.json` define o realm `demo` e os clients `frontend` e `backend-client`, sem contas interativas pré-cadastradas.
 
 ## Resetar o realm
 

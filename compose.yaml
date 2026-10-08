@@ -3,16 +3,15 @@ services:
     image: quay.io/keycloak/keycloak:26.2
     command: start-dev --import-realm
     depends_on:
-      postgres:
+      postgres-keycloak:
         condition: service_healthy
     environment:
       KC_BOOTSTRAP_ADMIN_USERNAME: ${KEYCLOAK_ADMIN_USERNAME:?KEYCLOAK_ADMIN_USERNAME must be set}
       KC_BOOTSTRAP_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD:?KEYCLOAK_ADMIN_PASSWORD must be set}
       KC_DB: postgres
-      KC_DB_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB:?POSTGRES_DB must be set}
+      KC_DB_URL: jdbc:postgresql://postgres-keycloak:5432/${POSTGRES_DB:?POSTGRES_DB must be set}
       KC_DB_USERNAME: ${POSTGRES_USER:?POSTGRES_USER must be set}
       KC_DB_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD must be set}
-      KC_DB_SCHEMA: keycloak
       KC_FEATURES: update-email
       KC_HOSTNAME: http://localhost:8080
       KC_HOSTNAME_STRICT: false
@@ -24,43 +23,54 @@ services:
     volumes:
       - ./infra/realm-demo.json:/opt/keycloak/data/import/realm-demo.json:ro
     healthcheck:
-      test: ["CMD-SHELL", "bash -c 'exec 3<>/dev/tcp/127.0.0.1/8080'"]
+      test: ["CMD-SHELL", "bash -ec 'exec 3<>/dev/tcp/127.0.0.1/9000; printf \"GET /health/ready HTTP/1.1\\r\\nHost: localhost\\r\\nConnection: close\\r\\n\\r\\n\" >&3; grep -q \"200 OK\" <&3'"]
       interval: 10s
       timeout: 5s
       retries: 30
-      start_period: 50s
+      start_period: 90s
     restart: unless-stopped
 
-  postgres:
+  postgres-keycloak:
     image: postgres:16-alpine
     environment:
       POSTGRES_DB: ${POSTGRES_DB:?POSTGRES_DB must be set}
       POSTGRES_USER: ${POSTGRES_USER:?POSTGRES_USER must be set}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD must be set}
-    ports:
-      - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:?POSTGRES_USER must be set}"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:?POSTGRES_USER must be set} -d ${POSTGRES_DB:?POSTGRES_DB must be set}"]
       interval: 5s
       timeout: 5s
       retries: 20
-    restart: unless-stopped
+
+  postgres-backend:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: ${POSTGRES_BACKEND_DB:?POSTGRES_BACKEND_DB must be set}
+      POSTGRES_USER: ${POSTGRES_BACKEND_USER:?POSTGRES_BACKEND_USER must be set}
+      POSTGRES_PASSWORD: ${POSTGRES_BACKEND_PASSWORD:?POSTGRES_BACKEND_PASSWORD must be set}
+    ports:
+      - "${POSTGRES_BACKEND_PORT:-5432}:5432"
+    volumes:
+      - postgres_backend_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_BACKEND_USER:?POSTGRES_BACKEND_USER must be set} -d ${POSTGRES_BACKEND_DB:?POSTGRES_BACKEND_DB must be set}"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
 
   flyway:
     image: flyway/flyway:13-alpine
     container_name: setup-keycloak-consolid-flyway
     depends_on:
-      postgres:
-        condition: service_healthy
-      keycloak:
+      postgres-backend:
         condition: service_healthy
     command:
-      - -url=jdbc:postgresql://postgres:5432/${POSTGRES_DB:?POSTGRES_DB must be set}
-      - -user=${POSTGRES_USER:?POSTGRES_USER must be set}
-      - -password=${POSTGRES_PASSWORD:?POSTGRES_PASSWORD must be set}
-      - -schemas=public,keycloak
+      - -url=jdbc:postgresql://postgres-backend:5432/${POSTGRES_BACKEND_DB:?POSTGRES_BACKEND_DB must be set}
+      - -user=${POSTGRES_BACKEND_USER:?POSTGRES_BACKEND_USER must be set}
+      - -password=${POSTGRES_BACKEND_PASSWORD:?POSTGRES_BACKEND_PASSWORD must be set}
+      - -schemas=public
       - -defaultSchema=public
       - -connectRetries=60
       - migrate
@@ -76,3 +86,4 @@ services:
 
 volumes:
   postgres_data:
+  postgres_backend_data:

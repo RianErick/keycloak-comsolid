@@ -71,7 +71,7 @@
         "description": "${role_default-roles}",
         "composite": true,
         "composites": {
-          "realm": ["offline_access", "uma_authorization", "user"],
+          "realm": ["offline_access", "user"],
           "client": {
             "account": ["view-profile", "manage-account"]
           }
@@ -100,7 +100,7 @@
       "fullScopeAllowed": true
     },
     {
-      "clientId": "frontend",
+      "clientId": "frontend-client",
       "name": "Frontend React",
       "description": "React SPA using Authorization Code with PKCE",
       "enabled": true,
@@ -111,17 +111,17 @@
       "directAccessGrantsEnabled": false,
       "serviceAccountsEnabled": false,
       "protocol": "openid-connect",
-      "rootUrl": "http://localhost:3000",
-      "baseUrl": "http://localhost:3000",
+      "rootUrl": "http://localhost:5173",
+      "baseUrl": "http://localhost:5173",
       "redirectUris": [
-        "http://localhost:3000/*"
+        "http://localhost:5173/*"
       ],
       "webOrigins": [
-        "http://localhost:3000"
+        "http://localhost:5173"
       ],
       "attributes": {
         "pkce.code.challenge.method": "S256",
-        "post.logout.redirect.uris": "http://localhost:3000/*",
+        "post.logout.redirect.uris": "http://localhost:5173/*",
         "oauth2.device.authorization.grant.enabled": "false"
       },
       "fullScopeAllowed": true,
@@ -149,40 +149,6 @@
       "clientRoles": {
         "realm-management": ["manage-users", "view-users", "query-users"]
       }
-    },
-    {
-      "username": "alice",
-      "enabled": true,
-      "emailVerified": true,
-      "firstName": "Alice",
-      "lastName": "Silva",
-      "email": "alice@demo.local",
-      "credentials": [
-        {
-          "type": "password",
-          "value": "alice123",
-          "temporary": false
-        }
-      ],
-      "realmRoles": ["user", "offline_access", "uma_authorization"],
-      "requiredActions": []
-    },
-    {
-      "username": "bob",
-      "enabled": true,
-      "emailVerified": true,
-      "firstName": "Bob",
-      "lastName": "Santos",
-      "email": "bob@demo.local",
-      "credentials": [
-        {
-          "type": "password",
-          "value": "bob123",
-          "temporary": false
-        }
-      ],
-      "realmRoles": ["user", "admin", "offline_access", "uma_authorization"],
-      "requiredActions": []
     }
   ]
 }

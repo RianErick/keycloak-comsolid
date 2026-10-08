@@ -93,6 +93,14 @@ public class UserService {
         keycloakService.update(user.getKeycloakId(), request);
     }
 
+    @Transactional
+    public void delete(String username) {
+        User user = userRepository.findByUsername(username).orElseThrow(UserNotFoundException::new);
+        AuthorizationHelper.validateResourceAccess(user.getKeycloakId());
+        keycloakService.delete(user.getKeycloakId());
+        userRepository.delete(user);
+    }
+
     @Transactional(readOnly = true)
     public void requestEmailUpdate(String username) {
         User user = userRepository.findByUsername(username).orElseThrow(UserNotFoundException::new);

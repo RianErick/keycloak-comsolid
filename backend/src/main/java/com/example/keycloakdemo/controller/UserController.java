@@ -14,6 +14,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -31,14 +32,12 @@ public class UserController implements UserControllerDocs {
     private final UserService userService;
 
     @Override
-    @PreAuthorizeAdmin
     @GetMapping
     public ResponseEntity<ApplicationPage<UserResponse>> search(@Valid @ParameterObject UserQuery query) {
         return ResponseEntity.ok(userService.search(query));
     }
 
     @Override
-    @PreAuthorizeAdmin
     @GetMapping("/{username}")
     public UserResponse find(@PathVariable String username) {
         return userService.find(username).orElseThrow(UserNotFoundException::new);
@@ -74,10 +73,18 @@ public class UserController implements UserControllerDocs {
     }
 
     @Override
-    @PreAuthorizeUser
+    @PreAuthorizeAdmin
     @PatchMapping("/{username}/email/verifications")
     public ResponseEntity<Void> resetVerificationEmail(@PathVariable String username) {
         userService.resetVerificationEmail(username);
+        return ResponseEntity.noContent().build();
+    }
+
+    @Override
+    @PreAuthorizeUser
+    @DeleteMapping("/{username}")
+    public ResponseEntity<Void> delete(@PathVariable String username) {
+        userService.delete(username);
         return ResponseEntity.noContent().build();
     }
 }
