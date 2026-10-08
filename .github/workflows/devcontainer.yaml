@@ -18,7 +18,7 @@ jobs:
 
     env:
       REGISTRY: ghcr.io
-      IMAGE_NAME: ghcr.io/rianerick/setup-keycloak-consolid
+      IMAGE_NAME: ghcr.io/rianerick/keycloak-comsolid
 
     steps:
       - name: Checkout repository

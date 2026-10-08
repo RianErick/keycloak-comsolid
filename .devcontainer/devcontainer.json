@@ -1,6 +1,6 @@
 {
-  "name": "setup-keycloak-consolid",
-  "image": "ghcr.io/rianerick/setup-keycloak-consolid:devcontainer",
+  "name": "keycloak-comsolid",
+  "image": "ghcr.io/rianerick/keycloak-comsolid:devcontainer",
   "workspaceMount": "source=${localWorkspaceFolder},target=${localWorkspaceFolder},type=bind",
   "workspaceFolder": "${localWorkspaceFolder}",
   "initializeCommand": "bash .devcontainer/scripts/init.sh",
