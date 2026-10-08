@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-mkdir -p "${HOME}/.codex" "${HOME}/.kube"
+mkdir -p "${HOME}/.codex"
