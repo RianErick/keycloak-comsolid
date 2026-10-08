@@ -37,7 +37,7 @@ services:
       POSTGRES_USER: ${POSTGRES_USER:?POSTGRES_USER must be set}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD must be set}
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - postgres_keycloak_data:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:?POSTGRES_USER must be set} -d ${POSTGRES_DB:?POSTGRES_DB must be set}"]
       interval: 5s
@@ -80,10 +80,16 @@ services:
   mailhog:
     image: mailhog/mailhog:v1.0.1
     container_name: setup-keycloak-consolid-mailhog
+    environment:
+      MH_STORAGE: maildir
+      MH_MAILDIR_PATH: /maildir
     ports:
       - "1025:1025"
       - "8025:8025"
+    volumes:
+      - mailhog_data:/maildir
 
 volumes:
-  postgres_data:
+  postgres_keycloak_data:
   postgres_backend_data:
+  mailhog_data:

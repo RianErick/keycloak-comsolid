@@ -5,9 +5,9 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(HttpStatus.UNAUTHORIZED)
 public class UserUnauthorizedException extends BaseException {
-    private static final String DEFAULT_ERROR_MESSAGE = "User is not authenticated";
+  private static final String DEFAULT_ERROR_MESSAGE = "User is not authenticated";
 
-    public UserUnauthorizedException() {
-        super(DEFAULT_ERROR_MESSAGE);
-    }
+  public UserUnauthorizedException() {
+    super(DEFAULT_ERROR_MESSAGE);
+  }
 }

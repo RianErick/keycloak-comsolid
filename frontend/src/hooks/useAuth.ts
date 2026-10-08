@@ -1,27 +1,31 @@
-import { useEffect, useState } from 'react'
-import { useQuery } from '@tanstack/react-query'
-import { keycloak, keycloakInit } from '@/services/keycloak.service'
-import { getCurrentUser } from '@/services/user.service'
+import { useEffect, useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { keycloak, keycloakInit } from '@/services/keycloak.service';
+import { getCurrentUser } from '@/services/user.service';
 
-type KeycloakStatus = 'initializing' | 'ready' | 'error'
+type KeycloakStatus = 'initializing' | 'ready' | 'error';
 
 export function useAuth() {
-  const [keycloakStatus, setKeycloakStatus] = useState<KeycloakStatus>('initializing')
+  const [keycloakStatus, setKeycloakStatus] =
+    useState<KeycloakStatus>('initializing');
 
   useEffect(() => {
-    let cancelled = false
+    let cancelled = false;
     keycloakInit
       .then(async () => {
-        if (keycloak.authenticated) await keycloak.updateToken(-1).catch(() => undefined)
-        if (!cancelled) setKeycloakStatus('ready')
+        if (keycloak.authenticated)
+          await keycloak.updateToken(-1).catch(() => undefined);
+        if (!cancelled) setKeycloakStatus('ready');
       })
       .catch(() => {
-        if (cancelled) return
-        setKeycloakStatus('error')
-      })
+        if (cancelled) return;
+        setKeycloakStatus('error');
+      });
 
-    return () => { cancelled = true }
-  }, [])
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   const userQuery = useQuery({
     queryKey: ['users', 'current'],
@@ -29,7 +33,7 @@ export function useAuth() {
     retry: false,
     staleTime: 5 * 60_000,
     enabled: keycloakStatus === 'ready' && Boolean(keycloak.authenticated),
-  })
+  });
 
   const currentUser = keycloak.authenticated
     ? {
@@ -38,14 +42,19 @@ export function useAuth() {
         isAdmin: keycloak.realmAccess?.roles.includes('admin') ?? false,
         user: userQuery.data ?? null,
       }
-    : null
+    : null;
 
   return {
     ready: keycloakStatus !== 'initializing',
     currentUser,
-    error: keycloakStatus === 'error'
-      ? 'Could not connect to Keycloak. Make sure it is running.'
-      : userQuery.error instanceof Error ? userQuery.error.message : '',
-    retryUser: () => { void userQuery.refetch() },
-  }
+    error:
+      keycloakStatus === 'error'
+        ? 'Could not connect to Keycloak. Make sure it is running.'
+        : userQuery.error instanceof Error
+          ? userQuery.error.message
+          : '',
+    retryUser: () => {
+      void userQuery.refetch();
+    },
+  };
 }

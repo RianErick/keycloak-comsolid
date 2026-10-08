@@ -28,54 +28,56 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/v1/users")
 public class UserController implements UserControllerDocs {
 
-    private final UserService userService;
+  private final UserService userService;
 
-    @Override
-    @GetMapping
-    public ResponseEntity<ApplicationPage<UserResponse>> search(@Valid @ParameterObject UserQuery query) {
-        return ResponseEntity.ok(userService.search(query));
-    }
+  @Override
+  @GetMapping
+  public ResponseEntity<ApplicationPage<UserResponse>> search(
+      @Valid @ParameterObject UserQuery query) {
+    return ResponseEntity.ok(userService.search(query));
+  }
 
-    @Override
-    @GetMapping("/{username}")
-    public UserResponse find(@PathVariable String username) {
-        return userService.find(username).orElseThrow(UserNotFoundException::new);
-    }
+  @Override
+  @GetMapping("/{username}")
+  public UserResponse find(@PathVariable String username) {
+    return userService.find(username).orElseThrow(UserNotFoundException::new);
+  }
 
-    @Override
-    @PreAuthorizeUser
-    @GetMapping("/me")
-    public UserResponse findSelf() {
-        return userService.findSelf().orElseThrow(UserNotFoundException::new);
-    }
+  @Override
+  @PreAuthorizeUser
+  @GetMapping("/me")
+  public UserResponse findSelf() {
+    return userService.findSelf().orElseThrow(UserNotFoundException::new);
+  }
 
-    @Override
-    @PostMapping
-    public UserResponse register(@RequestBody @Valid UserRegisterRequest request) {
-        return userService.register(request);
-    }
+  @Override
+  @PostMapping
+  public UserResponse register(@RequestBody @Valid UserRegisterRequest request) {
+    return userService.register(request);
+  }
 
-    @Override
-    @PreAuthorizeUser
-    @PutMapping("/{username}")
-    public ResponseEntity<Void> update(@PathVariable String username, @RequestBody @Valid UserUpdateRequest request) {
-        userService.update(username, request);
-        return ResponseEntity.noContent().build();
-    }
+  @Override
+  @PreAuthorizeUser
+  @PutMapping("/{username}")
+  public ResponseEntity<Void> update(
+      @PathVariable String username, @RequestBody @Valid UserUpdateRequest request) {
+    userService.update(username, request);
+    return ResponseEntity.noContent().build();
+  }
 
-    @Override
-    @PreAuthorizeUser
-    @PatchMapping("/{username}/email")
-    public ResponseEntity<Void> changeEmail(@PathVariable String username) {
-        userService.changeEmail(username);
-        return ResponseEntity.noContent().build();
-    }
+  @Override
+  @PreAuthorizeUser
+  @PatchMapping("/{username}/email")
+  public ResponseEntity<Void> changeEmail(@PathVariable String username) {
+    userService.changeEmail(username);
+    return ResponseEntity.noContent().build();
+  }
 
-    @Override
-    @PreAuthorizeUser
-    @DeleteMapping("/{username}")
-    public ResponseEntity<Void> delete(@PathVariable String username) {
-        userService.delete(username);
-        return ResponseEntity.noContent().build();
-    }
+  @Override
+  @PreAuthorizeUser
+  @DeleteMapping("/{username}")
+  public ResponseEntity<Void> delete(@PathVariable String username) {
+    userService.delete(username);
+    return ResponseEntity.noContent().build();
+  }
 }

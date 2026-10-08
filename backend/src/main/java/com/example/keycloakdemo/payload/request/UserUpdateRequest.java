@@ -16,19 +16,19 @@ import lombok.Setter;
 @AllArgsConstructor
 public class UserUpdateRequest {
 
-    @NotBlank
-    @Size(min = 3, max = 50)
-    @Pattern(regexp = "^[a-zA-Z0-9._-]+$")
-    private String username;
+  @NotBlank
+  @Size(min = 3, max = 50)
+  @Pattern(regexp = "^[a-zA-Z0-9._-]+$")
+  private String username;
 
-    @NotBlank
-    @Size(max = 50)
-    private String firstName;
+  @NotBlank
+  @Size(max = 50)
+  private String firstName;
 
-    @NotBlank
-    @Size(max = 50)
-    private String lastName;
+  @NotBlank
+  @Size(max = 50)
+  private String lastName;
 
-    @Size(max = 1000)
-    private String description;
+  @Size(max = 1000)
+  private String description;
 }

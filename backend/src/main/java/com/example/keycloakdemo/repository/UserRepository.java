@@ -12,7 +12,8 @@ import org.springframework.data.repository.query.Param;
 
 public interface UserRepository extends JpaRepository<User, UUID> {
 
-    @Query("""
+  @Query(
+      """
         SELECT u FROM User u
         WHERE (:#{#query.username} IS NULL OR LOWER(u.username) LIKE LOWER(CONCAT('%', :#{#query.username}, '%')))
           AND (:#{#query.email} IS NULL OR LOWER(u.email) LIKE LOWER(CONCAT('%', :#{#query.email}, '%')))
@@ -21,20 +22,21 @@ public interface UserRepository extends JpaRepository<User, UUID> {
           AND (:#{#query.createdAfter} IS NULL OR u.createdAt >= :#{#query.createdAfter == null ? null : #query.createdAfter.atStartOfDay()})
           AND (:#{#query.createdBefore} IS NULL OR u.createdAt < :#{#query.createdBefore == null ? null : #query.createdBefore.plusDays(1).atStartOfDay()})
         """)
-    Page<User> search(@Param("query") UserQuery query, Pageable pageable);
+  Page<User> search(@Param("query") UserQuery query, Pageable pageable);
 
-    Optional<User> findByKeycloakId(UUID keycloakId);
-    Optional<User> findByUsername(String username);
+  Optional<User> findByKeycloakId(UUID keycloakId);
 
-    @Query("""
+  Optional<User> findByUsername(String username);
+
+  @Query(
+      """
         SELECT CASE WHEN COUNT(u) > 0 THEN true ELSE false END
         FROM User u
         WHERE (u.username = :username OR (:email IS NOT NULL AND u.email = :email))
           AND (:excludedId IS NULL OR u.id <> :excludedId)
         """)
-    boolean existsConflict(
-        @Param("username") String username,
-        @Param("email") String email,
-        @Param("excludedId") UUID excludedId
-    );
+  boolean existsConflict(
+      @Param("username") String username,
+      @Param("email") String email,
+      @Param("excludedId") UUID excludedId);
 }

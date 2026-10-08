@@ -1,4 +1,4 @@
-.PHONY: up build update clean
+.PHONY: up build update clean format check
 
 MVN := ./mvnw
 
@@ -25,3 +25,9 @@ update:
 
 clean:
 	$(MVN) clean
+
+format:
+	$(MVN) spotless:apply
+
+check:
+	$(MVN) spotless:check test

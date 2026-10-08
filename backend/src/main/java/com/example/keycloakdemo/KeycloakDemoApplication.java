@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 @SpringBootApplication
 public class KeycloakDemoApplication {
 
-    public static void main(String[] args) {
-        SpringApplication.run(KeycloakDemoApplication.class, args);
-    }
+  public static void main(String[] args) {
+    SpringApplication.run(KeycloakDemoApplication.class, args);
+  }
 }

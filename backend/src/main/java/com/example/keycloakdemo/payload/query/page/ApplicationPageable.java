@@ -13,7 +13,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class ApplicationPageable {
 
-    private Integer pageNumber;
-    private Integer pageSize;
-    private Long total;
+  private Integer pageNumber;
+  private Integer pageSize;
+  private Long total;
 }

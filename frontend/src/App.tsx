@@ -1,9 +1,9 @@
-import { useAuth } from '@/hooks/useAuth'
-import { AppRoutes } from '@/routes'
+import { useAuth } from '@/hooks/useAuth';
+import { AppRoutes } from '@/routes';
 
 function App() {
-  const session = useAuth()
-  return <AppRoutes session={session} />
+  const session = useAuth();
+  return <AppRoutes session={session} />;
 }
 
-export default App
+export default App;

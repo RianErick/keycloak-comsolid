@@ -17,25 +17,25 @@ import lombok.Setter;
 @AllArgsConstructor
 public class UserRegisterRequest {
 
-    @NotBlank
-    @Size(max = 50)
-    private String firstName;
+  @NotBlank
+  @Size(max = 50)
+  private String firstName;
 
-    @NotBlank
-    @Size(max = 50)
-    private String lastName;
+  @NotBlank
+  @Size(max = 50)
+  private String lastName;
 
-    @NotBlank
-    @Size(min = 3, max = 50)
-    @Pattern(regexp = "^[a-zA-Z0-9._-]+$")
-    private String username;
+  @NotBlank
+  @Size(min = 3, max = 50)
+  @Pattern(regexp = "^[a-zA-Z0-9._-]+$")
+  private String username;
 
-    @NotBlank
-    @Email
-    @Size(max = 254)
-    private String email;
+  @NotBlank
+  @Email
+  @Size(max = 254)
+  private String email;
 
-    @NotBlank
-    @Size(min = 8, max = 128)
-    private String password;
+  @NotBlank
+  @Size(min = 8, max = 128)
+  private String password;
 }
