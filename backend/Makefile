@@ -1,6 +1,6 @@
 .PHONY: up build update clean
 
-MVN := mvn
+MVN := ./mvnw
 
 ifneq (,$(wildcard .env))
 include .env
