@@ -10,7 +10,7 @@ export function UserRegistrationPage({ onLogin }: UserRegistrationPageProps) {
   const registration = useRegistration()
 
   return (
-    <main className="page">
+    <main className="grid min-h-screen w-full place-items-center p-6">
       <Card className="w-full max-w-md">
         <CardHeader><CardTitle className="text-xl">Create account</CardTitle></CardHeader>
         <CardContent className="grid gap-4">

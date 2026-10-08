@@ -10,7 +10,7 @@ type LoginPageProps = {
 
 export function LoginPage({ error, onRegister }: LoginPageProps) {
   return (
-    <main className="page">
+    <main className="grid min-h-screen w-full place-items-center p-6">
       <Card className="w-full max-w-md">
         <CardHeader><CardTitle className="text-xl">Demo Keycloak</CardTitle></CardHeader>
         <CardContent className="grid gap-4">
