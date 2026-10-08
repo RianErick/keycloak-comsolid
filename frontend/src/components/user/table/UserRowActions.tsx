@@ -31,24 +31,27 @@ export function UserRowActions({
       <Button
         size="sm"
         variant="outline"
+        className="h-8 w-32 shrink-0 justify-center rounded-md border-neutral-400 bg-white px-3 text-neutral-900 hover:bg-neutral-50 hover:text-neutral-900"
         disabled={busy || !canManageUser}
         title={!canManageUser ? 'Only admins can edit other users.' : undefined}
         onClick={() => onEdit(user)}
       ><Pencil aria-hidden="true" />Edit</Button>
       <Button
         size="sm"
-        variant="destructive"
-        disabled={busy || !canManageUser}
-        title={!canManageUser ? 'Only admins can delete other users.' : undefined}
-        onClick={confirmDelete}
-      ><Trash2 aria-hidden="true" />Delete</Button>
-      <Button
-        size="sm"
         variant="outline"
+        className="h-8 w-32 shrink-0 justify-center rounded-md border-neutral-400 bg-white px-3 text-neutral-900 hover:bg-neutral-50 hover:text-neutral-900"
         disabled={busy || !canManageUser}
         title={!canManageUser ? 'Only admins can request email changes for other users.' : undefined}
         onClick={() => onChangeEmail(user.username)}
       ><Mail aria-hidden="true" />Change email</Button>
+      <Button
+        size="sm"
+        variant="outline"
+        className="h-8 w-32 shrink-0 justify-center rounded-md border-red-400 bg-white px-3 text-red-600 hover:bg-red-50 hover:text-red-700"
+        disabled={busy || !canManageUser}
+        title={!canManageUser ? 'Only admins can delete other users.' : undefined}
+        onClick={confirmDelete}
+      ><Trash2 aria-hidden="true" />Delete</Button>
     </div>
   )
 }

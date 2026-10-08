@@ -15,12 +15,12 @@ type UsersPageProps = {
 
 export function UsersPage({ user, username, userId, isAdmin, error, onRetry }: UsersPageProps) {
   return (
-    <main className="grid min-h-screen w-full place-items-center bg-neutral-300 p-6">
+    <main className="grid min-h-screen w-full place-items-center bg-neutral-200 p-4 sm:p-8">
       <div className="mx-auto grid w-full max-w-6xl gap-6">
         <UserCard user={user} username={username} error={error} onRetry={onRetry} />
         <Card>
           <CardHeader>
-            <CardTitle className="flex items-center gap-2"><UsersRound aria-hidden="true" className="size-5 text-muted-foreground" />Users</CardTitle>
+            <CardTitle className="flex items-center gap-2"><UsersRound aria-hidden="true" className="size-6 text-muted-foreground" />Users</CardTitle>
             <CardDescription>Manage users. Email changes and verification use a Keycloak confirmation email.</CardDescription>
           </CardHeader>
           <CardContent><UsersTable currentUser={user} currentUserId={user?.keycloakId ?? userId} isAdmin={isAdmin} /></CardContent>

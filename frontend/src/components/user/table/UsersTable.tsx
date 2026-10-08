@@ -38,7 +38,7 @@ export function UsersTable({ currentUser, currentUserId, isAdmin }: UsersTablePr
             <TableHead>Username</TableHead>
             <TableHead>Name</TableHead>
             <TableHead>Email</TableHead>
-            <TableHead className="min-w-80">Actions</TableHead>
+            <TableHead className="min-w-[25rem]">Actions</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -47,7 +47,10 @@ export function UsersTable({ currentUser, currentUserId, isAdmin }: UsersTablePr
           ) : visibleUsers.length === 0 ? (
             <TableRow><TableCell colSpan={4}>No users found.</TableCell></TableRow>
           ) : visibleUsers.map((user) => (
-            <TableRow key={user.id}>
+            <TableRow
+              key={user.id}
+              className={user.keycloakId === currentUserId ? '[&>td:first-child]:border-l-4 [&>td:first-child]:border-l-neutral-600' : undefined}
+            >
               <TableCell>{user.username}</TableCell>
               <TableCell>{user.firstName} {user.lastName}</TableCell>
               <TableCell>{user.email}</TableCell>

@@ -18,7 +18,7 @@ export function UserCard({ user, username, error, onRetry }: UserCardProps) {
       <CardHeader className="items-center text-center">
         <CardTitle className="flex flex-col items-center gap-3 text-xl">
           <span className="grid size-10 shrink-0 place-items-center rounded-full bg-primary/10 text-primary">
-            <UserRound aria-hidden="true" className="size-5" />
+            <UserRound aria-hidden="true" className="size-6" />
           </span>
           <span>Hello, {user?.firstName || username}</span>
         </CardTitle>
@@ -34,8 +34,8 @@ export function UserCard({ user, username, error, onRetry }: UserCardProps) {
         {error && <Alert className="w-full max-w-xl text-left" variant="destructive"><AlertDescription>{error}</AlertDescription></Alert>}
         {error && <Button variant="outline" onClick={onRetry}>Retry</Button>}
         <Button
-          variant="destructive"
-          size="sm"
+          variant="outline"
+          className="h-9 rounded-lg border-red-400 bg-white px-4 text-red-600 hover:bg-red-50 hover:text-red-700"
           onClick={() => logout()}
         >
           <LogOut aria-hidden="true" />
