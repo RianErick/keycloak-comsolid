@@ -53,6 +53,10 @@ public class AuthenticationHelper {
         if (realmAccess == null || !(realmAccess.get("roles") instanceof List<?> roles)) {
             return List.of();
         }
-        return roles.stream().map(Object::toString).toList();
+
+        return roles.stream()
+            .filter(String.class::isInstance)
+            .map(String.class::cast)
+            .toList();
     }
 }

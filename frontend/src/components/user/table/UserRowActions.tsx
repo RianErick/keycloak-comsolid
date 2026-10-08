@@ -54,8 +54,8 @@ export function UserRowActions({
       <Button
         size="sm"
         variant="outline"
-        disabled={busy || !isAdmin}
-        title={!isAdmin ? 'Only admins can resend verification emails.' : undefined}
+        disabled={busy || !canManageUser}
+        title={!canManageUser ? 'You can only resend verification for your own account.' : undefined}
         onClick={() => onResendVerification(user.username)}
       >Resend verification</Button>
     </div>

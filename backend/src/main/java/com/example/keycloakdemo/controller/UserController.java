@@ -7,7 +7,6 @@ import com.example.keycloakdemo.payload.query.page.ApplicationPage;
 import com.example.keycloakdemo.payload.request.UserRegisterRequest;
 import com.example.keycloakdemo.payload.request.UserUpdateRequest;
 import com.example.keycloakdemo.payload.response.UserResponse;
-import com.example.keycloakdemo.security.annotation.PreAuthorizeAdmin;
 import com.example.keycloakdemo.security.annotation.PreAuthorizeUser;
 import com.example.keycloakdemo.service.UserService;
 import jakarta.validation.Valid;
@@ -73,7 +72,7 @@ public class UserController implements UserControllerDocs {
     }
 
     @Override
-    @PreAuthorizeAdmin
+    @PreAuthorizeUser
     @PatchMapping("/{username}/email/verifications")
     public ResponseEntity<Void> resetVerificationEmail(@PathVariable String username) {
         userService.resetVerificationEmail(username);

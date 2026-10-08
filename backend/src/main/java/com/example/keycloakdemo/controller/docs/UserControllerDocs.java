@@ -118,11 +118,12 @@ public interface UserControllerDocs {
     ResponseEntity<Void> requestEmailUpdate(@PathVariable String username);
 
     @Operation(
-        summary = "Resend the email verification message (admin only)",
+        summary = "Resend the email verification message (self or admin)",
         security = @SecurityRequirement(name = "bearerAuth"),
         responses = {
             @ApiResponse(responseCode = "204", description = "Verification email sent", content = @Content),
             @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content),
+            @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content),
             @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content),
             @ApiResponse(responseCode = "404", description = "User not found", content = @Content),
             @ApiResponse(responseCode = "409", description = "Email is already verified", content = @Content),

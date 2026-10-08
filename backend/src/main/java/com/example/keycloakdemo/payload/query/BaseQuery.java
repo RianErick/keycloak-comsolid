@@ -9,6 +9,7 @@ import java.time.LocalDate;
 import java.util.Map;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.lang.NonNull;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -49,6 +50,7 @@ public abstract class BaseQuery {
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private LocalDate createdAfter;
 
+    @NonNull
     public Sort getSort() {
         Sort.Direction direction = orderBy.startsWith("-") 
             ? Sort.Direction.DESC

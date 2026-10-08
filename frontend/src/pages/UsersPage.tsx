@@ -14,15 +14,15 @@ type UsersPageProps = {
 
 export function UsersPage({ profile, username, userId, isAdmin, error, onRetry }: UsersPageProps) {
   return (
-    <main className="min-h-screen w-full p-6">
+    <main className="min-h-screen w-full bg-neutral-300 p-6">
       <div className="mx-auto grid max-w-6xl gap-6">
         <UserProfileCard profile={profile} username={username} error={error} onRetry={onRetry} />
         <Card>
           <CardHeader>
             <CardTitle>Users</CardTitle>
-            <CardDescription>Email changes use a Keycloak confirmation email. Resending verification is restricted to admins.</CardDescription>
+            <CardDescription>You can manage your own account. Email changes and verification use a Keycloak confirmation email.</CardDescription>
           </CardHeader>
-          <CardContent><UsersTable currentUserId={profile?.keycloakId ?? userId} isAdmin={isAdmin} /></CardContent>
+          <CardContent><UsersTable currentUser={profile} currentUserId={profile?.keycloakId ?? userId} isAdmin={isAdmin} /></CardContent>
         </Card>
       </div>
     </main>

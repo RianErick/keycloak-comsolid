@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Map;
 
 import org.springframework.core.convert.converter.Converter;
+import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -16,7 +17,7 @@ import org.springframework.stereotype.Component;
 public class JwtAuthenticationConverter implements Converter<Jwt, AbstractAuthenticationToken> {
 
     @Override
-    public AbstractAuthenticationToken convert(Jwt jwt) {
+    public AbstractAuthenticationToken convert(@NonNull Jwt jwt) {
         Collection<GrantedAuthority> authorities = new ArrayList<>();
         Map<String, Object> realmAccess = jwt.getClaim("realm_access");
 
@@ -30,6 +31,7 @@ public class JwtAuthenticationConverter implements Converter<Jwt, AbstractAuthen
         if (principal == null || principal.isBlank()) {
             principal = jwt.getSubject();
         }
+
         return new JwtAuthenticationToken(jwt, authorities, principal);
     }
 }

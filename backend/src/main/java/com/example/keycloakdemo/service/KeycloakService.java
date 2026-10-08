@@ -59,10 +59,8 @@ public class KeycloakService {
                 log.error("Keycloak returned an invalid user ID", e);
                 throw KeycloakExceptionStrategy.of(502);
             }
-        } catch (WebApplicationException e) {
-            throw mapException(e);
-        } catch (ProcessingException e) {
-            throw mapException(e);
+        } catch (WebApplicationException | ProcessingException e) {
+            throw KeycloakExceptionStrategy.of(e);
         }
     }
 
@@ -73,34 +71,20 @@ public class KeycloakService {
             user.setFirstName(request.getFirstName().trim());
             user.setLastName(request.getLastName().trim());
             usersResource.get(keycloakId.toString()).update(user);
-        } catch (WebApplicationException e) {
-            throw mapException(e);
-        } catch (ProcessingException e) {
-            throw mapException(e);
+        } catch (WebApplicationException | ProcessingException e) {
+            throw KeycloakExceptionStrategy.of(e);
         }
     }
 
     public void requestEmailUpdate(UUID keycloakId) {
         try {
             usersResource.get(keycloakId.toString()).executeActionsEmail(List.of("UPDATE_EMAIL"));
-        } catch (WebApplicationException e) {
-            throw mapException(e);
-        } catch (ProcessingException e) {
-            throw mapException(e);
+        } catch (WebApplicationException | ProcessingException e) {
+            throw KeycloakExceptionStrategy.of(e);
         }
     }
 
-    public void delete(UUID keycloakId) {
-        try {
-            usersResource.get(keycloakId.toString()).remove();
-        } catch (WebApplicationException e) {
-            throw mapException(e);
-        } catch (ProcessingException e) {
-            throw mapException(e);
-        }
-    }
-
-    public void resetVerificationEmail(UUID keycloakId) {
+    public void sendVerificationEmail(UUID keycloakId) {
         try {
             UserResource userResource = usersResource.get(keycloakId.toString());
             UserRepresentation user = userResource.toRepresentation();
@@ -109,26 +93,17 @@ public class KeycloakService {
             }
 
             userResource.sendVerifyEmail();
-        } catch (WebApplicationException e) {
-            throw mapException(e);
-        } catch (ProcessingException e) {
-            throw mapException(e);
+        } catch (WebApplicationException | ProcessingException e) {
+            throw KeycloakExceptionStrategy.of(e);
         }
     }
 
-    private RuntimeException mapException(WebApplicationException e) {
-        Response response = e.getResponse();
-        if (response == null) {
-            log.error("Keycloak request failed without an HTTP response", e);
-            return KeycloakExceptionStrategy.of(502);
+    public void delete(UUID keycloakId) {
+        try {
+            usersResource.get(keycloakId.toString()).remove();
+        } catch (WebApplicationException | ProcessingException e) {
+            throw KeycloakExceptionStrategy.of(e);
         }
-
-        log.error("Keycloak returned HTTP {}", response.getStatus(), e);
-        return KeycloakExceptionStrategy.of(response.getStatus());
     }
 
-    private RuntimeException mapException(ProcessingException e) {
-        log.error("Could not reach Keycloak", e);
-        return KeycloakExceptionStrategy.of(502);
-    }
 }

@@ -8,13 +8,17 @@ import { useUsers } from '@/hooks/useUsers'
 import type { UserProfile } from '@/types/user'
 
 type UsersTableProps = {
+  currentUser: UserProfile | null
   currentUserId?: string
   isAdmin: boolean
 }
 
-export function UsersTable({ currentUserId, isAdmin }: UsersTableProps) {
+export function UsersTable({ currentUser, currentUserId, isAdmin }: UsersTableProps) {
   const directory = useUsers()
   const [editingUser, setEditingUser] = useState<UserProfile | null>(null)
+  const visibleUsers = currentUser
+    ? [currentUser, ...directory.users.filter((user) => user.keycloakId !== currentUser.keycloakId)]
+    : directory.users
 
   return (
     <div className="grid gap-4">
@@ -32,9 +36,9 @@ export function UsersTable({ currentUserId, isAdmin }: UsersTableProps) {
         <TableBody>
           {directory.loading ? (
             <TableRow><TableCell colSpan={4}>Loading users…</TableCell></TableRow>
-          ) : directory.users.length === 0 ? (
+          ) : visibleUsers.length === 0 ? (
             <TableRow><TableCell colSpan={4}>No users found.</TableCell></TableRow>
-          ) : directory.users.map((user) => (
+          ) : visibleUsers.map((user) => (
             <TableRow key={user.id}>
               <TableCell>{user.username}</TableCell>
               <TableCell>{user.firstName} {user.lastName}</TableCell>

@@ -1,5 +1,6 @@
 package com.example.keycloakdemo.service;
 
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -55,16 +56,18 @@ public class UserService {
         }
 
         UUID keycloakId = keycloakService.register(request);
-        User user = User.builder()
+        User user = Objects.requireNonNull(User.builder()
             .keycloakId(keycloakId)
             .username(request.getUsername())
             .email(request.getEmail())
             .firstName(request.getFirstName().trim())
             .lastName(request.getLastName().trim())
-            .build();
+            .build());
 
         try {
-            return userMapper.toResponse(userRepository.saveAndFlush(user));
+            user = userRepository.saveAndFlush(user);
+            keycloakService.sendVerificationEmail(keycloakId);
+            return userMapper.toResponse(user);
         } catch (RuntimeException saveException) {
             try {
                 keycloakService.delete(keycloakId);
@@ -112,6 +115,6 @@ public class UserService {
     public void resetVerificationEmail(String username) {
         User user = userRepository.findByUsername(username).orElseThrow(UserNotFoundException::new);
         AuthorizationHelper.validateResourceAccess(user.getKeycloakId());
-        keycloakService.resetVerificationEmail(user.getKeycloakId());
+        keycloakService.sendVerificationEmail(user.getKeycloakId());
     }
 }

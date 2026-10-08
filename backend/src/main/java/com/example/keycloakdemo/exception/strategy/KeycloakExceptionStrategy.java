@@ -2,6 +2,8 @@ package com.example.keycloakdemo.exception.strategy;
 
 import java.util.function.Supplier;
 
+import jakarta.ws.rs.WebApplicationException;
+import jakarta.ws.rs.core.Response;
 import com.example.keycloakdemo.exception.KeycloakBadGatewayException;
 import com.example.keycloakdemo.exception.KeycloakBadRequestException;
 import com.example.keycloakdemo.exception.KeycloakConflictException;
@@ -24,8 +26,22 @@ public enum KeycloakExceptionStrategy {
 
     public static RuntimeException of(int statusCode) {
         for (KeycloakExceptionStrategy strategy : values()) {
-            if (strategy.statusCode == statusCode) return strategy.exceptionSupplier.get();
+            if (strategy.statusCode == statusCode) {
+                return strategy.exceptionSupplier.get();
+            }
         }
+
         return new KeycloakBadGatewayException();
+    }
+
+    public static RuntimeException of(RuntimeException exception) {
+        if (exception instanceof WebApplicationException webException) {
+            Response response = webException.getResponse();
+            if (response != null) {
+                return of(response.getStatus());
+            }
+        }
+
+        return of(502);
     }
 }
