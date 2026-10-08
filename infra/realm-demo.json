@@ -10,7 +10,7 @@
   "duplicateEmailsAllowed": false,
   "resetPasswordAllowed": false,
   "editUsernameAllowed": false,
-  "verifyEmail": false,
+  "verifyEmail": true,
   "bruteForceProtected": false,
   "internationalizationEnabled": true,
   "supportedLocales": ["pt-BR", "en"],

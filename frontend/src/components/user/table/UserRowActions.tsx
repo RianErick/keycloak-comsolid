@@ -9,7 +9,6 @@ type UserRowActionsProps = {
   onEdit: (user: UserProfile) => void
   onDelete: (username: string) => void
   onChangeEmail: (username: string) => void
-  onResendVerification: (username: string) => void
 }
 
 export function UserRowActions({
@@ -20,7 +19,6 @@ export function UserRowActions({
   onEdit,
   onDelete,
   onChangeEmail,
-  onResendVerification,
 }: UserRowActionsProps) {
   const canManageUser = isAdmin || user.keycloakId === currentUserId
 
@@ -51,13 +49,6 @@ export function UserRowActions({
         title={!canManageUser ? 'You can only request an email change for your own account.' : undefined}
         onClick={() => onChangeEmail(user.username)}
       >Change email</Button>
-      <Button
-        size="sm"
-        variant="outline"
-        disabled={busy || !canManageUser}
-        title={!canManageUser ? 'You can only resend verification for your own account.' : undefined}
-        onClick={() => onResendVerification(user.username)}
-      >Resend verification</Button>
     </div>
   )
 }

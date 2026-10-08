@@ -1,8 +1,7 @@
 import { useEffect, useState } from 'react'
 import {
   deleteUser,
-  requestEmailChange,
-  resendVerificationEmail,
+  changeEmail,
   searchUsers,
   updateUser,
 } from '@/services/user.service'
@@ -76,8 +75,6 @@ export function useUsers() {
     remove: (username: string) =>
       runAction(() => deleteUser(username), 'User deleted.'),
     changeEmail: (username: string) =>
-      runAction(() => requestEmailChange(username), 'Email change request sent.'),
-    resendVerification: (username: string) =>
-      runAction(() => resendVerificationEmail(username), 'Verification email sent.'),
+      runAction(() => changeEmail(username), 'Email change confirmation sent.'),
   }
 }

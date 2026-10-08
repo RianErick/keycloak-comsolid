@@ -105,7 +105,7 @@ public interface UserControllerDocs {
     ResponseEntity<Void> delete(@PathVariable String username);
 
     @Operation(
-        summary = "Start the email change confirmation flow",
+        summary = "Change the user's email",
         security = @SecurityRequirement(name = "bearerAuth"),
         responses = {
             @ApiResponse(responseCode = "204", description = "Email change confirmation sent", content = @Content),
@@ -115,19 +115,6 @@ public interface UserControllerDocs {
             @ApiResponse(responseCode = "502", description = "Keycloak request failed", content = @Content)
         }
     )
-    ResponseEntity<Void> requestEmailUpdate(@PathVariable String username);
+    ResponseEntity<Void> changeEmail(@PathVariable String username);
 
-    @Operation(
-        summary = "Resend the email verification message (self or admin)",
-        security = @SecurityRequirement(name = "bearerAuth"),
-        responses = {
-            @ApiResponse(responseCode = "204", description = "Verification email sent", content = @Content),
-            @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content),
-            @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content),
-            @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content),
-            @ApiResponse(responseCode = "404", description = "User not found", content = @Content),
-            @ApiResponse(responseCode = "409", description = "Email is already verified", content = @Content),
-            @ApiResponse(responseCode = "502", description = "Keycloak request failed", content = @Content)
-        })
-    ResponseEntity<Void> resetVerificationEmail(@PathVariable String username);
 }

@@ -19,6 +19,7 @@ public class AuthenticationHelper {
         if (authentication == null || !authentication.isAuthenticated()) {
             throw new UserUnauthorizedException();
         }
+
         return authentication;
     }
 
@@ -27,6 +28,7 @@ public class AuthenticationHelper {
         if (!(authentication instanceof JwtAuthenticationToken jwtAuthentication)) {
             throw new UserUnauthorizedException();
         }
+
         return jwtAuthentication.getToken();
     }
 
@@ -35,13 +37,17 @@ public class AuthenticationHelper {
         if (username == null || username.isBlank()) {
             throw new UserUnauthorizedException();
         }
+
         return username;
     }
 
     public static UUID getKeycloakId() {
         try {
             String subject = getJwt().getSubject();
-            if (subject == null || subject.isBlank()) throw new IllegalArgumentException();
+            if (subject == null || subject.isBlank()) {
+                throw new IllegalArgumentException();
+            }
+
             return UUID.fromString(subject);
         } catch (IllegalArgumentException exception) {
             throw new UserUnauthorizedException();

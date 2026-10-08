@@ -52,7 +52,6 @@ export function UsersTable({ currentUser, currentUserId, isAdmin }: UsersTablePr
                   onEdit={setEditingUser}
                   onDelete={directory.remove}
                   onChangeEmail={directory.changeEmail}
-                  onResendVerification={directory.resendVerification}
                 />
               </TableCell>
             </TableRow>

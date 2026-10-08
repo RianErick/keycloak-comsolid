@@ -76,7 +76,7 @@ public class KeycloakService {
         }
     }
 
-    public void requestEmailUpdate(UUID keycloakId) {
+    public void changeEmail(UUID keycloakId) {
         try {
             usersResource.get(keycloakId.toString()).executeActionsEmail(List.of("UPDATE_EMAIL"));
         } catch (WebApplicationException | ProcessingException e) {

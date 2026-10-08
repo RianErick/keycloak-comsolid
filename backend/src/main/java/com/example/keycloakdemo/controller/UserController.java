@@ -66,16 +66,8 @@ public class UserController implements UserControllerDocs {
     @Override
     @PreAuthorizeUser
     @PatchMapping("/{username}/email")
-    public ResponseEntity<Void> requestEmailUpdate(@PathVariable String username) {
-        userService.requestEmailUpdate(username);
-        return ResponseEntity.noContent().build();
-    }
-
-    @Override
-    @PreAuthorizeUser
-    @PatchMapping("/{username}/email/verifications")
-    public ResponseEntity<Void> resetVerificationEmail(@PathVariable String username) {
-        userService.resetVerificationEmail(username);
+    public ResponseEntity<Void> changeEmail(@PathVariable String username) {
+        userService.changeEmail(username);
         return ResponseEntity.noContent().build();
     }
 

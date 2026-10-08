@@ -105,16 +105,9 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    public void requestEmailUpdate(String username) {
+    public void changeEmail(String username) {
         User user = userRepository.findByUsername(username).orElseThrow(UserNotFoundException::new);
         AuthorizationHelper.validateResourceAccess(user.getKeycloakId());
-        keycloakService.requestEmailUpdate(user.getKeycloakId());
-    }
-
-    @Transactional(readOnly = true)
-    public void resetVerificationEmail(String username) {
-        User user = userRepository.findByUsername(username).orElseThrow(UserNotFoundException::new);
-        AuthorizationHelper.validateResourceAccess(user.getKeycloakId());
-        keycloakService.sendVerificationEmail(user.getKeycloakId());
+        keycloakService.changeEmail(user.getKeycloakId());
     }
 }

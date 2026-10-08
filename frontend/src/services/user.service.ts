@@ -35,16 +35,9 @@ export async function deleteUser(username: string): Promise<void> {
   })
 }
 
-export async function requestEmailChange(username: string): Promise<void> {
+export async function changeEmail(username: string): Promise<void> {
   const token = await getAccessToken()
   await api.patch(`/v1/users/${encodeURIComponent(username)}/email`, undefined, {
-    headers: { Authorization: `Bearer ${token}` },
-  })
-}
-
-export async function resendVerificationEmail(username: string): Promise<void> {
-  const token = await getAccessToken()
-  await api.patch(`/v1/users/${encodeURIComponent(username)}/email/verifications`, undefined, {
     headers: { Authorization: `Bearer ${token}` },
   })
 }
